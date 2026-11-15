@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>การสร้างเว็บแอปคณิตศาสตร์โดยใช้ AI (หลักสูตร 4 ชม.) | ครูคณิตศาสตร์ ม.5</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Prompt & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <!-- FontAwesome 6 Free Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- KaTeX (LaTeX Math Rendering Engine) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+    /* White Glassmorphism Effects */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
+    }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid #e2e8f0;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0284c7; }
+
+    /* Highlighted dynamic variables inside Mega Prompt (Light Theme) */
+    .var-highlight {
+      background: linear-gradient(90deg, #e0f2fe, #fce7f3);
+      color: #0369a1;
+      border: 1px solid #7dd3fc;
+      padding: 1px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      display: inline-block;
+      margin: 1px 0;
+    }
+
+    /* Pulse animation when selecting workflow step */
+    @keyframes ringPulse {
+      0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.45); }
+      70% { box-shadow: 0 0 0 16px rgba(14, 165, 233, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+    }
+    .pulse-focus {
+      animation: ringPulse 1.5s ease-out;
+    }
+  </style>
+</head>
+<body class="selection:bg-sky-500 selection:text-white relative bg-slate-50 text-slate-900">
+
+  <!-- Soft Pastel Background Ambient Glows on White Background -->
+  <div class="fixed top-0 left-1/4 w-[36rem] h-[36rem] bg-sky-200/40 rounded-full blur-[130px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-10 right-10 w-[34rem] h-[34rem] bg-pink-200/40 rounded-full blur-[130px] pointer-events-none -z-10"></div>
+
+  <!-- 🔔 Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-[9999] transform translate-y-24 opacity-0 pointer-events-none transition-all duration-300 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-sky-400/40 flex items-center gap-3 text-sm font-semibold">
+    <i id="toast-icon" class="fa-solid fa-circle-check text-sky-400 text-lg"></i>
+    <span id="toast-msg">คัดลอก Mega Prompt สำเร็จแล้ว!</span>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- ส่วนที่ 1: Sticky Navbar & Hero Section (โทนสีขาวสะอาดตา)               -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-50 glass-nav shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <!-- Brand -->
+      <a href="#hero" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-pink-500 flex items-center justify-center text-white font-black shadow-md shadow-sky-500/20 group-hover:scale-105 transition">
+          <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-sm sm:text-base tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-600 via-indigo-600 to-pink-600">
+            AI Math WebApp Portal
+          </span>
+          <p class="text-[11px] text-slate-500 hidden sm:block">อบรมครูคณิตศาสตร์ ม.5 (หลักสูตร 4 ชม.) • 25 มี.ค. 2570</p>
+        </div>
+      </a>
+
+      <!-- Desktop Menu -->
+      <nav class="hidden md:flex items-center gap-1 lg:gap-2 text-xs lg:text-sm font-bold text-slate-600">
+        <a href="#workflow" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">1. แผนผัง 5 ขั้นตอน</a>
+        <a href="#interactive-demo" class="px-3 py-2 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition">
+          <i class="fa-solid fa-gamepad text-amber-500 mr-1"></i>ตัวอย่างสื่อ Interactive
+        </a>
+        <a href="#schedule" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">2. กำหนดการ 4 ชม.</a>
+        <a href="#magic-prompt" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-50 to-pink-50 text-sky-700 border border-sky-200 hover:border-pink-300 transition">
+          <i class="fa-solid fa-bolt text-pink-500 mr-1"></i>3. Magic Prompt
+        </a>
+        <a href="#showcase" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">4. ผลงานตัวอย่าง</a>
+        <a href="#checklist" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">5. เตรียมความพร้อม</a>
+      </nav>
+
+      <!-- Quick Gemini Launch -->
+      <div class="flex items-center gap-2">
+        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 hover:from-sky-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-sparkles"></i>
+          <span>เปิด Gemini AI</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero" class="relative pt-8 pb-12 md:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 lg:p-12 relative overflow-hidden border border-slate-200 shadow-xl">
+      <div class="absolute -right-16 -top-16 w-72 h-72 bg-gradient-to-br from-sky-100 to-pink-100 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-4xl space-y-6">
+        <!-- Status Badges -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs font-extrabold">
+            <span class="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span>
+            หลักสูตรอบรมเชิงปฏิบัติการ 4 ชั่วโมงเต็ม • หลักสูตร สสวท.
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-pink-50 border border-pink-200 text-pink-700 text-xs font-extrabold">
+            <i class="fa-solid fa-calendar-day"></i> 25 มีนาคม 2570
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-extrabold">
+            <i class="fa-solid fa-users-gear"></i> กลุ่มเป้าหมาย: ครูคณิตศาสตร์ ม.5
+          </span>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900">
+          การสร้างเว็บแอปคณิตศาสตร์โดยใช้ AI<br />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-pink-600">
+            เจาะลึก “ลำดับและอนุกรม” ครบทุกหัวข้อย่อย
+          </span>
+        </h1>
+
+        <p class="text-slate-600 text-sm sm:text-lg leading-relaxed max-w-3xl">
+          พอร์ทัลการเรียนรู้สำหรับครูคณิตศาสตร์ ม.5 พาสร้างเว็บแอปแบบ Interactive ด้วย <strong>Google Gemini</strong> ให้ครบทั้ง <strong>6 หัวข้อย่อยของเรื่องลำดับและอนุกรม</strong> (ความหมายของลำดับ, ลำดับเลขคณิต, ลำดับเรขาคณิต, อนุกรมเลขคณิต, อนุกรมเรขาคณิต) พร้อมเชื่อมโยงสู่ <strong>ดอกเบี้ยและมูลค่าของเงินในชีวิตประจำวัน</strong> และปรับเปลี่ยนเนื้อหาเป็นบทเรียนอื่นได้ตามต้องการ!
+        </p>
+
+        <!-- Subtopics Coverage Banner -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5">
+          <div class="text-xs font-extrabold text-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-sky-600"></i>
+            <span>หัวข้อย่อยในเว็บแอปที่ผู้เข้าอบรมจะได้สร้างจาก Prompt ของเรา (ครบตามโครงสร้าง สสวท. ม.5 พร้อมแสดงสมการ LaTeX คมชัด):</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-bold">
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px]">1</span> ความหมายลำดับ $a_n$
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px]">2</span> ลำดับเลขคณิต ($a_n$)
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px]">3</span> ลำดับเรขาคณิต ($a_n$)
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">4</span> อนุกรมเลขคณิต ($S_n$)
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">5</span> อนุกรมเรขาคณิต ($S_n$)
+            </div>
+            <div class="bg-gradient-to-r from-pink-50 to-rose-50 px-3 py-2 rounded-xl border border-pink-200 text-pink-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-pink-500 text-white flex items-center justify-center text-[10px]">6</span> ดอกเบี้ย & มูลค่าเงิน
+            </div>
+          </div>
+
+          <!-- 📐 กล่องตัวอย่างการแสดงผลสมการคณิตศาสตร์ด้วย LaTeX (KaTeX Preview) -->
+          <div class="pt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-sky-700 mb-1">1. ลำดับเลขคณิต & เรขาคณิต</p>
+              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
+                $$a_n = a_1 + (n-1)d \quad , \quad a_n = a_1 r^{n-1}$$
+              </div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-indigo-700 mb-1">2. อนุกรมเลขคณิต ($S_n$)</p>
+              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
+                $$S_n = \frac{n}{2}[2a_1 + (n-1)d]$$
+              </div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-purple-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-purple-700 mb-1">3. อนุกรมเรขาคณิต ($S_n$)</p>
+              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
+                $$S_n = \frac{a_1(1 - r^n)}{1 - r} \quad (r \neq 1)$$
+              </div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-pink-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-pink-700 mb-1">4. ดอกเบี้ยทบต้น & ค่างวด</p>
+              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
+                $$S = P\left(1 + \frac{r}{k}\right)^{kn}$$
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instructor & Showcase Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center font-black text-xl shrink-0 shadow">
+              <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-sky-600">วิทยากรผู้สอนและพัฒนานวัตกรรม</p>
+              <p class="font-extrabold text-base text-slate-900">นายอชิตพล บุณรัตน์</p>
+              <p class="text-xs text-slate-500">ตำแหน่ง ครูโรงเรียนวังโพรงพิทยาคม</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 text-white flex items-center justify-center font-black text-xl shrink-0 shadow">
+              <i class="fa-solid fa-rocket"></i>
+            </div>
+            <div class="min-w-0">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-pink-600">เว็บไซต์ผลงานต้นแบบ (Showcase)</p>
+              <a href="https://mathdevth.github.io/" target="_blank" rel="noopener noreferrer" class="font-extrabold text-sm sm:text-base text-slate-900 hover:text-sky-600 truncate block underline decoration-pink-500">
+                https://mathdevth.github.io/
+              </a>
+              <p class="text-xs text-slate-500">และแอปคณิตการเงิน: mathdevth.github.io/financial-classroom</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap items-center gap-3.5 pt-2">
+          <a href="#interactive-demo" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-sm sm:text-base shadow-lg shadow-amber-500/25 hover:scale-[1.02] active:scale-95 transition flex items-center gap-2">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>ทดลองเล่นสื่อ Interactive ที่ครูจะได้สร้าง</span>
+          </a>
+          <a href="#magic-prompt" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 via-indigo-500 to-pink-500 text-white font-black text-sm sm:text-base shadow-lg shadow-sky-500/25 hover:scale-[1.02] active:scale-95 transition flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>ไปที่ Magic Prompt (ครบทุกหัวข้อย่อย)</span>
+          </a>
+          <a href="#schedule" class="px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 font-bold text-sm sm:text-base transition flex items-center gap-2">
+            <i class="fa-regular fa-clock text-sky-600"></i>
+            <span>ดูกำหนดการอบรม 4 ชั่วโมง</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- ส่วนพิเศษ: ตัวอย่างสื่อ Interactive ที่ผู้เข้าอบรมจะได้จากการสร้างด้วย AI      -->
+  <!-- ===================================================================== -->
+  <section id="interactive-demo" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+    <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 border-2 border-amber-200 shadow-xl space-y-6 relative overflow-hidden">
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-slate-100 pb-5">
+        <div class="space-y-1.5">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-black uppercase">
+            <i class="fa-solid fa-wand-sparkles"></i> Live Interactive Preview • สื่อจริงที่เกิดจาก Mega Prompt
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900">
+            ตัวอย่างสื่อ Interactive เรื่อง “ลำดับ อนุกรม และดอกเบี้ย” ที่คุณครูจะได้สร้าง
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600">
+            ทดลองเลื่อนสไลเดอร์และกดปุ่มด้านล่างได้เลยครับ! นี่คือตัวอย่างหน้าตาและกลไกการทำงานจริงที่ Gemini จะเขียนโค้ดให้คุณครูจากคำสั่งในพอร์ทัลนี้
+          </p>
+        </div>
+
+        <!-- Lab Selector Tabs -->
+        <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shrink-0">
+          <button type="button" onclick="switchDemoLab(0)" id="demo-tab-0" class="px-3.5 py-2 rounded-xl text-xs font-extrabold transition bg-white text-sky-700 shadow-sm cursor-pointer">
+            📊 1. ลำดับเลขคณิต vs เรขาคณิต
+          </button>
+          <button type="button" onclick="switchDemoLab(1)" id="demo-tab-1" class="px-3.5 py-2 rounded-xl text-xs font-extrabold transition text-slate-600 hover:text-slate-900 cursor-pointer">
+            🧮 2. อนุกรมเลขคณิต (การจับคู่ของเกาส์)
+          </button>
+          <button type="button" onclick="switchDemoLab(2)" id="demo-tab-2" class="px-3.5 py-2 rounded-xl text-xs font-extrabold transition text-slate-600 hover:text-slate-900 cursor-pointer">
+            🏀 3. อนุกรมเรขาคณิต (ลูกบอลกระดอน)
+          </button>
+          <button type="button" onclick="switchDemoLab(3)" id="demo-tab-3" class="px-3.5 py-2 rounded-xl text-xs font-extrabold transition text-slate-600 hover:text-slate-900 cursor-pointer">
+            💰 4. ดอกเบี้ยทบต้น & ค่างวด ($i, N$)
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== DEMO LAB 0: ลำดับเลขคณิต vs เรขาคณิต ==================== -->
+      <div id="demo-panel-0" class="demo-panel grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Controls -->
+        <div class="lg:col-span-5 bg-slate-50 p-5 rounded-3xl border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-lg bg-sky-500 text-white text-xs font-black">หัวข้อย่อยที่ 1–3: ลำดับและการเห็นภาพ</span>
+            <button type="button" onclick="resetDemoSeq()" class="text-xs font-bold text-slate-500 hover:text-sky-600 cursor-pointer">รีเซ็ตค่า</button>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>พจน์แรก ($a_1$):</span>
+                <span id="lbl-seq-a1" class="text-sky-600 font-extrabold text-sm">2</span>
+              </div>
+              <input type="range" id="rng-seq-a1" min="1" max="10" step="1" value="2" oninput="updateDemoSeq()" class="w-full accent-sky-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>ผลต่างร่วม ($d$ สำหรับลำดับเลขคณิต):</span>
+                <span id="lbl-seq-d" class="text-sky-600 font-extrabold text-sm">+3</span>
+              </div>
+              <input type="range" id="rng-seq-d" min="1" max="10" step="1" value="3" oninput="updateDemoSeq()" class="w-full accent-sky-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>อัตราส่วนร่วม ($r$ สำหรับลำดับเรขาคณิต):</span>
+                <span id="lbl-seq-r" class="text-pink-600 font-extrabold text-sm">×2</span>
+              </div>
+              <input type="range" id="rng-seq-r" min="1.5" max="3" step="0.5" value="2" oninput="updateDemoSeq()" class="w-full accent-pink-500 cursor-pointer" />
+            </div>
+
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>พจน์ที่ต้องการหา ($n$):</span>
+                <span id="lbl-seq-n" class="text-indigo-600 font-extrabold text-sm">พจน์ที่ 6 ($a_6$)</span>
+              </div>
+              <input type="range" id="rng-seq-n" min="3" max="8" step="1" value="6" oninput="updateDemoSeq()" class="w-full accent-indigo-600 cursor-pointer" />
+            </div>
+          </div>
+
+          <!-- Dynamic LaTeX Step-by-Step Box -->
+          <div class="bg-white p-4 rounded-2xl border border-sky-200 space-y-2">
+            <p class="text-[11px] font-black uppercase text-sky-700">📐 กล่องแสดงวิธีทำแทนค่าสมการ LaTeX อัตโนมัติ:</p>
+            <div id="seq-math-box" class="text-xs sm:text-sm text-slate-800 space-y-1.5 overflow-x-auto"></div>
+          </div>
+        </div>
+
+        <!-- Visual Comparison Bars -->
+        <div class="lg:col-span-7 bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="font-black text-base text-white">แผนภาพเปรียบเทียบการเติบโตของแต่ละพจน์ ($a_1$ ถึง $a_n$)</h3>
+              <p class="text-xs text-slate-400">สังเกตความต่างระหว่างการบวกเพิ่มคงที่ ($+d$) กับการคูณทบต้น ($\times r$)</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-bold">
+              <span class="flex items-center gap-1.5 text-sky-400"><span class="w-3 h-3 rounded bg-sky-400 inline-block"></span> ลำดับเลขคณิต</span>
+              <span class="flex items-center gap-1.5 text-pink-400"><span class="w-3 h-3 rounded bg-pink-500 inline-block"></span> ลำดับเรขาคณิต</span>
+            </div>
+          </div>
+
+          <!-- Bar Chart Container -->
+          <div id="seq-bars-container" class="h-56 flex items-end justify-around gap-2 pt-8 pb-2 px-2 border-b border-slate-700"></div>
+
+          <!-- Real-life Connection Note -->
+          <div class="bg-white/10 p-3.5 rounded-2xl border border-white/10 text-xs text-slate-200 flex items-start gap-3">
+            <i class="fa-solid fa-lightbulb text-amber-400 text-base mt-0.5"></i>
+            <div>
+              <strong class="text-amber-300">เชื่อมโยงชีวิตประจำวัน:</strong>
+              ลำดับเลขคณิตเปรียบเสมือน <em>"การหยอดกระปุกเพิ่มวันละเท่าๆ กัน (ดอกเบี้ยคงต้น)"</em> ส่วนลำดับเรขาคณิตคือรากฐานของ <em>"การเติบโตของเงินฝากแบบดอกเบี้ยทบต้นและการแบ่งเซลล์"</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== DEMO LAB 1: อนุกรมเลขคณิต (การจับคู่ของเกาส์) ==================== -->
+      <div id="demo-panel-1" class="demo-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-5 bg-slate-50 p-5 rounded-3xl border border-slate-200 space-y-4">
+          <span class="px-3 py-1 rounded-lg bg-indigo-600 text-white text-xs font-black">หัวข้อย่อยที่ 4: อนุกรมเลขคณิต ($S_n$)</span>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            ช่วยให้เด็ก ม.5 เห็นภาพว่าทำไมสูตรผลบวกจึงเป็น $$S_n = \frac{n}{2}(a_1 + a_n)$$ โดยจำลองการจับคู่พจน์หน้าสุดกับพจน์ท้ายสุดของเกาส์!
+          </p>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>พจน์แรก ($a_1$):</span>
+                <span id="lbl-gauss-a1" class="text-indigo-600 font-extrabold text-sm">2</span>
+              </div>
+              <input type="range" id="rng-gauss-a1" min="1" max="15" step="1" value="2" oninput="updateDemoGauss()" class="w-full accent-indigo-600 cursor-pointer" />
+            </div>
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>ผลต่างร่วม ($d$):</span>
+                <span id="lbl-gauss-d" class="text-indigo-600 font-extrabold text-sm">3</span>
+              </div>
+              <input type="range" id="rng-gauss-d" min="1" max="10" step="1" value="3" oninput="updateDemoGauss()" class="w-full accent-indigo-600 cursor-pointer" />
+            </div>
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>จำนวนพจน์ที่นำมาบวกกัน ($n$ คู่):</span>
+                <span id="lbl-gauss-n" class="text-pink-600 font-extrabold text-sm">6 พจน์ (3 คู่)</span>
+              </div>
+              <input type="range" id="rng-gauss-n" min="4" max="10" step="2" value="6" oninput="updateDemoGauss()" class="w-full accent-pink-500 cursor-pointer" />
+            </div>
+          </div>
+
+          <div id="gauss-math-box" class="bg-white p-4 rounded-2xl border border-indigo-200 text-xs sm:text-sm text-slate-800 space-y-1.5 overflow-x-auto"></div>
+        </div>
+
+        <div class="lg:col-span-7 bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 space-y-4">
+          <h3 class="font-black text-base text-white">แผนภาพการจับคู่พจน์หน้า-พจน์หลัง (Gauss Pairing Visualizer)</h3>
+          <p class="text-xs text-slate-400">พจน์ที่มีสีเดียวกันเมื่อนำมาบวกกัน จะได้ผลลัพธ์เท่ากับ $(a_1 + a_n)$ เสมอ!</p>
+          <div id="gauss-visual-box" class="space-y-4 py-2"></div>
+        </div>
+      </div>
+
+      <!-- ==================== DEMO LAB 2: อนุกรมเรขาคณิต (ลูกบอลกระดอนพื้น) ==================== -->
+      <div id="demo-panel-2" class="demo-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-5 bg-slate-50 p-5 rounded-3xl border border-slate-200 space-y-4">
+          <span class="px-3 py-1 rounded-lg bg-pink-600 text-white text-xs font-black">หัวข้อย่อยที่ 5: อนุกรมเรขาคณิต ($S_n$)</span>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            โจทย์คลาสสิกในหนังสือเรียน สสวท.: ปล่อยลูกบอลจากความสูงเริ่มต้น แล้วกระดอนขึ้นเป็นสัดส่วน $r$ ของความสูงเดิม
+          </p>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>ความสูงเริ่มต้น ($a_1$ เมตร):</span>
+                <span id="lbl-ball-h" class="text-pink-600 font-extrabold text-sm">10 เมตร</span>
+              </div>
+              <input type="range" id="rng-ball-h" min="5" max="20" step="1" value="10" oninput="updateDemoBall()" class="w-full accent-pink-500 cursor-pointer" />
+            </div>
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>สัดส่วนความสูงที่กระดอนขึ้น ($r$):</span>
+                <span id="lbl-ball-r" class="text-sky-600 font-extrabold text-sm">0.70 (70%)</span>
+              </div>
+              <input type="range" id="rng-ball-r" min="0.4" max="0.85" step="0.05" value="0.7" oninput="updateDemoBall()" class="w-full accent-sky-500 cursor-pointer" />
+            </div>
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>จำนวนครั้งที่กระดอน ($n$ ครั้ง):</span>
+                <span id="lbl-ball-n" class="text-indigo-600 font-extrabold text-sm">6 ครั้ง</span>
+              </div>
+              <input type="range" id="rng-ball-n" min="3" max="8" step="1" value="6" oninput="updateDemoBall()" class="w-full accent-indigo-600 cursor-pointer" />
+            </div>
+          </div>
+
+          <div id="ball-math-box" class="bg-white p-4 rounded-2xl border border-pink-200 text-xs sm:text-sm text-slate-800 space-y-1.5 overflow-x-auto"></div>
+        </div>
+
+        <div class="lg:col-span-7 bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-black text-base text-white">จำลองวิถีความสูงของลูกบอลแต่ละครั้ง ($a_1, a_2, \dots, a_n$)</h3>
+              <p class="text-xs text-slate-400">ความสูงลดลงเรื่อยๆ ตามลำดับเรขาคณิต $a_n = a_1 r^{n-1}$ และผลรวมคืออนุกรม $S_n$</p>
+            </div>
+          </div>
+          <div id="ball-Bounce-bars" class="h-56 flex items-end justify-around gap-3 pt-8 pb-2 px-4 border-b border-slate-700"></div>
+        </div>
+      </div>
+
+      <!-- ==================== DEMO LAB 3: ดอกเบี้ยทบต้น & ค่างวด (TVM Bridge) ==================== -->
+      <div id="demo-panel-3" class="demo-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-5 bg-slate-50 p-5 rounded-3xl border border-slate-200 space-y-4">
+          <span class="px-3 py-1 rounded-lg bg-emerald-600 text-white text-xs font-black">หัวข้อย่อยที่ 6: ดอกเบี้ยทบต้นและค่างวดรายเดือน</span>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            เชื่อมโยงอนุกรมเรขาคณิตสู่การออมเงินทุกเดือน โดยแยกแสดง <strong>ขั้นที่ 1 (หาค่า $i$ และ $N$)</strong> เพื่อไม่ให้ผู้เรียนสับสน!
+          </p>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>เงินออมสะสมรายเดือน ($R$ บาท/เดือน):</span>
+                <span id="lbl-tvm-r" class="text-emerald-600 font-extrabold text-sm">2,000 บาท</span>
+              </div>
+              <input type="range" id="rng-tvm-r" min="500" max="10000" step="500" value="2000" oninput="updateDemoTVM()" class="w-full accent-emerald-600 cursor-pointer" />
+            </div>
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>อัตราดอกเบี้ยต่อปี ($r\%$ ต่อปี ทบต้นทุกเดือน $k=12$):</span>
+                <span id="lbl-tvm-rate" class="text-sky-600 font-extrabold text-sm">6% ต่อปี</span>
+              </div>
+              <input type="range" id="rng-tvm-rate" min="1" max="12" step="0.5" value="6" oninput="updateDemoTVM()" class="w-full accent-sky-500 cursor-pointer" />
+            </div>
+            <div>
+              <div class="flex justify-between font-bold text-slate-700 mb-1">
+                <span>ระยะเวลาการออม ($n$ ปี):</span>
+                <span id="lbl-tvm-years" class="text-pink-600 font-extrabold text-sm">5 ปี (60 งวด)</span>
+              </div>
+              <input type="range" id="rng-tvm-years" min="1" max="20" step="1" value="5" oninput="updateDemoTVM()" class="w-full accent-pink-500 cursor-pointer" />
+            </div>
+          </div>
+
+          <div id="tvm-math-box" class="bg-white p-4 rounded-2xl border border-emerald-200 text-xs text-slate-800 space-y-2 overflow-x-auto"></div>
+        </div>
+
+        <div class="lg:col-span-7 bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 space-y-5">
+          <h3 class="font-black text-base text-white">ผลลัพธ์การออมด้วยอนุกรมเรขาคณิต (เงินต้นสะสม vs ดอกเบี้ยทบต้น)</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+            <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+              <p class="text-[11px] text-slate-400">เงินต้นที่ฝากจริง ($R \times N$)</p>
+              <p id="res-tvm-principal" class="text-lg font-black text-sky-400 mt-1">120,000 ฿</p>
+            </div>
+            <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+              <p class="text-[11px] text-slate-400">ดอกเบี้ยทบต้นที่งอกเงย</p>
+              <p id="res-tvm-interest" class="text-lg font-black text-emerald-400 mt-1">+19,540 ฿</p>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-500/20 to-sky-500/20 p-4 rounded-2xl border border-emerald-400/40">
+              <p class="text-[11px] text-emerald-200 font-bold">เงินรวมอนาคต ($S_{\text{ปลายงวด}}$)</p>
+              <p id="res-tvm-total" class="text-xl font-black text-white mt-1">139,540 ฿</p>
+            </div>
+          </div>
+
+          <!-- Visual Stacked Progress Bar -->
+          <div class="space-y-2 pt-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span id="lbl-bar-prin" class="text-sky-400">สัดส่วนเงินต้น: 86%</span>
+              <span id="lbl-bar-int" class="text-emerald-400">สัดส่วนดอกเบี้ยทบต้น: 14%</span>
+            </div>
+            <div class="w-full h-7 bg-slate-800 rounded-2xl overflow-hidden flex border border-slate-700">
+              <div id="bar-tvm-prin" class="h-full bg-sky-500 transition-all duration-300" style="width: 86%"></div>
+              <div id="bar-tvm-int" class="h-full bg-emerald-400 transition-all duration-300" style="width: 14%"></div>
+            </div>
+          </div>
+
+          <div class="bg-white/10 p-3.5 rounded-2xl border border-white/10 text-xs text-slate-300">
+            💡 <strong>ทำไมต้องแยกขั้นที่ 1 ($i$ และ $N$)?</strong> เพราะนักเรียนมักเผลอแทนค่า $r = 6$ ลงในสูตรโดยตรง การบังคับให้ AI แสดงกล่องแปลงค่า $i = \frac{0.06}{12} = 0.005$ และ $N = 5 \times 12 = 60$ งวดก่อน จะช่วยให้เด็กเข้าใจที่มาอย่างแท้จริง
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- ส่วนที่ 2: Interactive Workflow Diagram (แผนภาพ 5 ขั้นตอน)              -->
+  <!-- ===================================================================== -->
+  <section id="workflow" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <span class="text-xs font-extrabold uppercase tracking-widest text-sky-600">Interactive Learning Roadmap</span>
+        <h2 class="text-2xl sm:text-3xl font-black mt-1 text-slate-900 flex items-center gap-2.5">
+          <i class="fa-solid fa-route text-pink-500"></i>
+          <span>แผนภาพ 5 ขั้นตอนการอบรม (คลิกเพื่อเปิด Mega Prompt แต่ละชุด)</span>
+        </h2>
+      </div>
+      <p class="text-xs sm:text-sm text-sky-800 bg-sky-50 border border-sky-200 px-4 py-2 rounded-xl font-semibold">
+        <i class="fa-solid fa-hand-pointer mr-1.5 text-pink-500"></i>
+        <strong>คลิกที่กล่องขั้นตอนใดก็ได้</strong> หน้าเว็บจะเลื่อนไปยังคู่มือและเปิดแท็บ Prompt นั้นให้ทันที!
+      </p>
+    </div>
+
+    <!-- Horizontal Flowchart with Arrows -->
+    <div class="grid grid-cols-1 lg:grid-cols-11 gap-3 items-stretch">
+
+      <!-- Step 1 Node: All-in-One Master Prompt -->
+      <button type="button" onclick="selectWorkflowStep(0)" class="lg:col-span-2 bg-white p-5 rounded-3xl border-2 border-sky-300 hover:border-sky-500 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-9 h-9 rounded-xl bg-sky-500 text-white font-black flex items-center justify-center text-sm shadow">01</span>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-sky-100 text-sky-700">Master All-in-One</span>
+          </div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-sky-600 transition">สร้างเว็บแอปครบทั้ง 6 หัวข้อย่อยในครั้งเดียว</h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Prompt หลักสำหรับเวลา 4 ชม. สั่ง Gemini สร้างเว็บที่มีครบทั้งลำดับ อนุกรม และดอกเบี้ยจบในไฟล์เดียว</p>
+        </div>
+        <div class="mt-4 pt-2.5 border-t border-slate-100 text-[11px] font-extrabold text-sky-600 flex items-center justify-between">
+          <span>เปิด Prompt #1 (แนะนำ)</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+        </div>
+      </button>
+
+      <!-- Arrow -->
+      <div class="hidden lg:flex items-center justify-center text-slate-400">
+        <i class="fa-solid fa-angles-right text-xl"></i>
+      </div>
+
+      <!-- Step 2 Node: Deep Dive Sequences -->
+      <button type="button" onclick="selectWorkflowStep(1)" class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 hover:border-indigo-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-9 h-9 rounded-xl bg-indigo-500 text-white font-black flex items-center justify-center text-sm shadow">02</span>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-indigo-100 text-indigo-700">Subtopics 1-3</span>
+          </div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-indigo-600 transition">เจาะลึก: ลำดับ, ลำดับเลขคณิต & เรขาคณิต</h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">เน้นสื่อเห็นภาพชัดเจน (บล็อกขั้นบันได, การแบ่งเซลล์, กราฟเทียบ Linear vs Exponential)</p>
+        </div>
+        <div class="mt-4 pt-2.5 border-t border-slate-100 text-[11px] font-extrabold text-indigo-600 flex items-center justify-between">
+          <span>เปิด Prompt #2</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+        </div>
+      </button>
+
+      <!-- Arrow -->
+      <div class="hidden lg:flex items-center justify-center text-slate-400">
+        <i class="fa-solid fa-angles-right text-xl"></i>
+      </div>
+
+      <!-- Step 3 Node: Deep Dive Series & TVM -->
+      <button type="button" onclick="selectWorkflowStep(2)" class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 hover:border-pink-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-9 h-9 rounded-xl bg-pink-500 text-white font-black flex items-center justify-center text-sm shadow">03</span>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-pink-100 text-pink-700">Subtopics 4-6</span>
+          </div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-pink-600 transition">เจาะลึก: อนุกรม $S_n$ & ดอกเบี้ย/มูลค่าเงิน</h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">จำลองการจับคู่ของเกาส์ ลูกบอลกระดอนพื้น เชื่อมสู่ดอกเบี้ยทบต้นและค่างวดผ่อนชำระ</p>
+        </div>
+        <div class="mt-4 pt-2.5 border-t border-slate-100 text-[11px] font-extrabold text-pink-600 flex items-center justify-between">
+          <span>เปิด Prompt #3</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+        </div>
+      </button>
+
+      <!-- Arrow -->
+      <div class="hidden lg:flex items-center justify-center text-slate-400">
+        <i class="fa-solid fa-angles-right text-xl"></i>
+      </div>
+
+      <!-- Step 4 Node: Google Sheets -->
+      <button type="button" onclick="selectWorkflowStep(3)" class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 hover:border-purple-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-9 h-9 rounded-xl bg-purple-600 text-white font-black flex items-center justify-center text-sm shadow">04</span>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-purple-100 text-purple-700">Quiz & Sheets</span>
+          </div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-purple-600 transition">ระบบแบบทดสอบ & เชื่อม Google Sheets</h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">เพิ่มเกมโจทย์ปัญหาชีวิตประจำวัน และส่งคะแนนนักเรียนเข้า Google Sheets ของครู</p>
+        </div>
+        <div class="mt-4 pt-2.5 border-t border-slate-100 text-[11px] font-extrabold text-purple-600 flex items-center justify-between">
+          <span>เปิด Prompt #4</span>
+          <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+        </div>
+      </button>
+
+      <!-- Arrow -->
+      <div class="hidden lg:flex items-center justify-center text-slate-400">
+        <i class="fa-solid fa-angles-right text-xl"></i>
+      </div>
+
+      <!-- Step 5 Node: GitHub Pages -->
+      <button type="button" onclick="selectWorkflowStep(4)" class="lg:col-span-1 bg-white p-4 rounded-3xl border border-slate-200 hover:border-emerald-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="w-8 h-8 rounded-xl bg-emerald-500 text-white font-black flex items-center justify-center text-xs shadow">05</span>
+          </div>
+          <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-emerald-600 transition">นำขึ้น GitHub</h3>
+          <p class="text-[11px] text-slate-500 mt-1 leading-snug">วางโค้ดเปิดเว็บออนไลน์ใน 3 นาที</p>
+        </div>
+        <div class="mt-3 pt-2 border-t border-slate-100 text-[10px] font-extrabold text-emerald-600 flex items-center justify-between">
+          <span>เปิด #5</span>
+          <i class="fa-solid fa-rocket"></i>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- ส่วนที่ 3: กำหนดการอบรมเชิงปฏิบัติการ 4 ชั่วโมง (4-Hour Intensive)       -->
+  <!-- ===================================================================== -->
+  <section id="schedule" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div>
+        <span class="text-xs font-extrabold uppercase tracking-widest text-pink-600">4-Hour Workshop Timeline • 25 มี.ค. 2570</span>
+        <h2 class="text-2xl sm:text-3xl font-black mt-1 text-slate-900 flex items-center gap-2.5">
+          <i class="fa-regular fa-clock text-sky-600"></i>
+          <span>โครงสร้างการอบรมเชิงปฏิบัติการ 4 ชั่วโมง (ครบจบได้เว็บใช้งานจริง)</span>
+        </h2>
+      </div>
+      <span class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl">
+        🎯 เป้าหมาย: ครูทุกท่านได้เว็บแอปเรื่องลำดับและอนุกรมครบทุกหัวข้อย่อย + ลิงก์ออนไลน์ของตนเอง
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- ชั่วโมงที่ 1 -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-800 font-black text-xs">ชั่วโมงที่ 1 (60 นาที)</span>
+            <i class="fa-solid fa-wand-magic-sparkles text-sky-500 text-xl"></i>
+          </div>
+          <h3 class="font-black text-base text-slate-900">ออกแบบโครงสร้างเว็บแอปครบทุกหัวข้อย่อยด้วย Gemini</h3>
+          <ul class="text-xs text-slate-600 space-y-2 leading-relaxed">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i><span>ทำความเข้าใจเทคนิค <strong>Single-File HTML</strong> (ไม่ต้องลงโปรแกรม)</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i><span>ปรับแต่งตัวแปรใน <strong>Magic Prompt Customizer</strong> ให้ตรงบริบทโรงเรียน</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i><span>เจนโค้ดชุดหลักให้ได้ครบ 5 หัวข้อย่อยของลำดับและอนุกรม ม.5</span></li>
+          </ul>
+        </div>
+        <div class="pt-3 border-t border-slate-100 text-[11px] font-bold text-sky-600">
+          ผลลัพธ์: โค้ดต้นฉบับที่มีแท็บลำดับเลขคณิต-เรขาคณิต และอนุกรม
+        </div>
+      </div>
+
+      <!-- ชั่วโมงที่ 2 -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-pink-100 text-pink-800 font-black text-xs">ชั่วโมงที่ 2 (60 นาที)</span>
+            <i class="fa-solid fa-coins text-pink-500 text-xl"></i>
+          </div>
+          <h3 class="font-black text-base text-slate-900">สร้างสื่อ Interactive เห็นภาพ & เชื่อมโยงดอกเบี้ย/มูลค่าเงิน</h3>
+          <ul class="text-xs text-slate-600 space-y-2 leading-relaxed">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-pink-500 mt-1"></i><span>สร้าง Simulator แสดงภาพบล็อกลำดับ การจับคู่ของเกาส์ และลูกบอลกระดอน</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-pink-500 mt-1"></i><span>เชื่อมโยงอนุกรมเรขาคณิตสู่ <strong>ดอกเบี้ยทบต้น มูลค่าปัจจุบัน/อนาคต และค่างวด</strong></span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-pink-500 mt-1"></i><span>เพิ่มกล่องแสดงวิธีทำแยกขั้นหา $i = r/k$ และ $n$ ตามแนวทาง สสวท.</span></li>
+          </ul>
+        </div>
+        <div class="pt-3 border-t border-slate-100 text-[11px] font-bold text-pink-600">
+          ผลลัพธ์: เครื่องคำนวณและกราฟโต้ตอบเชื่อมโยงชีวิตประจำวัน
+        </div>
+      </div>
+
+      <!-- ชั่วโมงที่ 3 -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-800 font-black text-xs">ชั่วโมงที่ 3 (60 นาที)</span>
+            <i class="fa-solid fa-table text-purple-600 text-xl"></i>
+          </div>
+          <h3 class="font-black text-base text-slate-900">สร้างแบบทดสอบโจทย์ปัญหา & เชื่อมต่อ Google Sheets</h3>
+          <ul class="text-xs text-slate-600 space-y-2 leading-relaxed">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-purple-500 mt-1"></i><span>เพิ่มหมวดแบบทดสอบสุ่มโจทย์ปัญหาพร้อมเฉลยวิธีทำละเอียด</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-purple-500 mt-1"></i><span>สร้างฐานข้อมูล Google Sheets และวางโค้ด <strong>Apps Script 15 บรรทัด</strong></span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-purple-500 mt-1"></i><span>ทดสอบกดส่งชื่อและคะแนนจากหน้าเว็บเข้าสู่ตารางของครูแบบเรียลไทม์</span></li>
+          </ul>
+        </div>
+        <div class="pt-3 border-t border-slate-100 text-[11px] font-bold text-purple-600">
+          ผลลัพธ์: ระบบเก็บคะแนนและประวัติการทำแบบฝึกหัดบนคลาวด์
+        </div>
+      </div>
+
+      <!-- ชั่วโมงที่ 4 -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs">ชั่วโมงที่ 4 (60 นาที)</span>
+            <i class="fa-solid fa-rocket text-emerald-600 text-xl"></i>
+          </div>
+          <h3 class="font-black text-base text-slate-900">อัปโหลดขึ้น GitHub Pages, คลินิกแก้บัค & ปรับเนื้อหา</h3>
+          <ul class="text-xs text-slate-600 space-y-2 leading-relaxed">
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1"></i><span>นำโค้ดวางในไฟล์ <code>index.html</code> บน GitHub และเปิด GitHub Pages</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1"></i><span>เทคนิคการสั่ง AI แก้บัคและวิธีเปลี่ยนเนื้อหาไปใช้สอนบทอื่น ๆ</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-emerald-500 mt-1"></i><span>สร้าง QR Code เว็บไซต์เพื่อนำไปใช้สอนจริงในห้องเรียนทันที</span></li>
+          </ul>
+        </div>
+        <div class="pt-3 border-t border-slate-100 text-[11px] font-bold text-emerald-600">
+          ผลลัพธ์: เว็บไซต์ออนไลน์พร้อมใช้งานจริง 100%
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- ส่วนที่ 4: ระบบ Magic Prompt Customizer & คู่มือ Step-by-Step (สำคัญมาก!) -->
+  <!-- ===================================================================== -->
+  <section id="magic-prompt" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+    <div class="space-y-2">
+      <span class="text-xs font-extrabold uppercase tracking-widest text-sky-600">Customizable Prompt Engineering Engine</span>
+      <h2 class="text-2xl sm:text-4xl font-black text-slate-900 flex items-center gap-3">
+        <i class="fa-solid fa-wand-magic-sparkles text-pink-500"></i>
+        <span>ระบบปรับแต่ง Magic Prompt อัตโนมัติ (ครบทุกหัวข้อย่อย & ปรับเนื้อหาได้อิสระ)</span>
+      </h2>
+      <p class="text-slate-600 text-sm sm:text-base">
+        เราตั้งค่าเริ่มต้นให้ครอบคลุม <strong>เรื่องลำดับและอนุกรม ม.5 ครบทุกหัวข้อย่อย + เชื่อมโยงดอกเบี้ยและมูลค่าของเงิน</strong> เรียบร้อยแล้ว หากคุณครูต้องการปรับเปลี่ยนหัวข้อย่อย สถานการณ์ชีวิตประจำวัน หรือเปลี่ยนไปสร้างเว็บเรื่องอื่น สามารถพิมพ์แก้ไขในกล่องด้านล่างหรือกดปุ่ม <strong>Presets</strong> ได้ทันที!
+      </p>
+    </div>
+
+    <!-- 4.1 กล่อง Input ปรับแต่งตัวแปรแบบ Real-time + ปุ่ม Presets -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-sky-200 shadow-lg space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="px-3 py-1 rounded-lg bg-gradient-to-r from-sky-500 to-pink-500 text-white font-black text-xs uppercase">Customizable Variables</span>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-800">แก้ไขข้อความในช่องด้านล่าง หรือเลือกชุดเนื้อหาสำเร็จรูป (Presets):</h3>
+        </div>
+        <!-- Preset Buttons -->
+        <div class="flex flex-wrap gap-2">
+          <button type="button" onclick="applyPreset('full_seq_tvm')" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-extrabold transition cursor-pointer">
+            ⭐ ค่าเริ่มต้น: ลำดับและอนุกรมครบทุกหัวข้อย่อย + ดอกเบี้ย
+          </button>
+          <button type="button" onclick="applyPreset('pure_seq')" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-extrabold transition cursor-pointer">
+            📘 เน้นลำดับและอนุกรมพื้นฐาน ม.5
+          </button>
+          <button type="button" onclick="applyPreset('fin_math')" class="px-3 py-1.5 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 text-xs font-extrabold transition cursor-pointer">
+            💰 เน้นดอกเบี้ยทบต้น ค่างวด & มูลค่าเงิน
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Input 1: ชื่อวิชา -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-extrabold text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-book-open text-sky-600"></i> 1. ชื่อรายวิชา (ปรับเปลี่ยนได้)
+          </label>
+          <input type="text" id="inp-subject" value="คณิตศาสตร์ (หลักสูตร สสวท.)" oninput="updateAllPrompts()"
+            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none text-xs sm:text-sm font-bold text-slate-900 transition" />
+        </div>
+
+        <!-- Input 2: ระดับชั้น -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-extrabold text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-graduation-cap text-sky-600"></i> 2. ระดับชั้นเรียน
+          </label>
+          <input type="text" id="inp-grade" value="มัธยมศึกษาปีที่ 5 (ม.5)" oninput="updateAllPrompts()"
+            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none text-xs sm:text-sm font-bold text-slate-900 transition" />
+        </div>
+
+        <!-- Input 3: เรื่องหลัก -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-extrabold text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-cubes-stacked text-pink-600"></i> 3. เรื่องหลักที่จะสอน
+          </label>
+          <input type="text" id="inp-topic" value="ลำดับและอนุกรม และการประยุกต์เรื่องดอกเบี้ยและมูลค่าของเงิน" oninput="updateAllPrompts()"
+            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 focus:bg-white focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none text-xs sm:text-sm font-bold text-slate-900 transition" />
+        </div>
+
+        <!-- Input 4: สไตล์หน้าเว็บ -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-extrabold text-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-palette text-pink-600"></i> 4. โทนสีและดีไซน์ที่ต้องการ
+          </label>
+          <input type="text" id="inp-style" value="โทนสีขาวสะอาดตา โมเดิร์นพาสเทล ฟ้า-ชมพู การ์ดสวยงามอ่านง่าย" oninput="updateAllPrompts()"
+            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 focus:bg-white focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 outline-none text-xs sm:text-sm font-bold text-slate-900 transition" />
+        </div>
+      </div>
+
+      <!-- Input 5: รายละเอียดหัวข้อย่อยและตัวอย่างชีวิตจริง (ปรับแก้ได้อิสระ) -->
+      <div class="space-y-1.5 pt-1">
+        <label class="text-xs font-extrabold text-slate-700 flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <i class="fa-solid fa-list-check text-indigo-600"></i>
+            5. หัวข้อย่อยที่ต้องการให้มีในเว็บแอป & สูตร LaTeX (ครูพิมพ์เพิ่ม/ลด/ปรับเนื้อหาได้เองตามใจชอบ)
+          </span>
+          <span class="text-[11px] font-semibold text-sky-600">รองรับการพิมพ์สมการ LaTeX เช่น $a_n$ แล้วแสดงผลสมการจริงทันที!</span>
+        </label>
+        <textarea id="inp-subtopics" rows="2" oninput="updateAllPrompts()"
+          class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-xs sm:text-sm font-semibold text-slate-800 transition leading-relaxed">(1) ความหมายของลำดับและพจน์ทั่วไป (2) ลำดับเลขคณิต $a_n = a_1+(n-1)d$ (3) ลำดับเรขาคณิต $a_n = a_1 r^{n-1}$ (4) อนุกรมเลขคณิต $S_n = \frac{n}{2}[2a_1+(n-1)d]$ (5) อนุกรมเรขาคณิต $S_n = \frac{a_1(1-r^n)}{1-r}$ และ (6) การประยุกต์เรื่องดอกเบี้ยทบต้น $S = P(1+i)^n$ มูลค่าปัจจุบัน/อนาคต และค่างวดผ่อนชำระในชีวิตจริง</textarea>
+      </div>
+    </div>
+
+    <!-- 4.3 แถบเลือกแท็บ (5 Tabs) -->
+    <div id="prompt-tabs-container" class="space-y-6">
+      <div class="flex flex-wrap gap-2 bg-white p-2 rounded-3xl border border-slate-200 shadow-sm">
+        <button type="button" onclick="switchPromptTab(0)" id="ptab-btn-0" class="flex-1 min-w-[180px] py-3 px-4 rounded-2xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-pink-500 text-white shadow-md cursor-pointer">
+          <i class="fa-solid fa-star"></i>
+          <span>แท็บ 1: Master Prompt (ครบทั้ง 6 หัวข้อย่อย)</span>
+        </button>
+        <button type="button" onclick="switchPromptTab(1)" id="ptab-btn-1" class="flex-1 min-w-[170px] py-3 px-4 rounded-2xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+          <i class="fa-solid fa-cubes"></i>
+          <span>แท็บ 2: เจาะลึกสื่อเห็นภาพ “ลำดับ” (หัวข้อ 1-3)</span>
+        </button>
+        <button type="button" onclick="switchPromptTab(2)" id="ptab-btn-2" class="flex-1 min-w-[170px] py-3 px-4 rounded-2xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+          <i class="fa-solid fa-coins"></i>
+          <span>แท็บ 3: เจาะลึก “อนุกรม & ดอกเบี้ย” (หัวข้อ 4-6)</span>
+        </button>
+        <button type="button" onclick="switchPromptTab(3)" id="ptab-btn-3" class="flex-1 min-w-[170px] py-3 px-4 rounded-2xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+          <i class="fa-solid fa-table"></i>
+          <span>แท็บ 4: เกมโจทย์ปัญหา & เชื่อม Google Sheet</span>
+        </button>
+        <button type="button" onclick="switchPromptTab(4)" id="ptab-btn-4" class="flex-1 min-w-[170px] py-3 px-4 rounded-2xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer">
+          <i class="fa-brands fa-github"></i>
+          <span>แท็บ 5: นำขึ้น GitHub & สั่ง AI แก้ไขเนื้อหา</span>
+        </button>
+      </div>
+
+      <!-- ==================== TAB 0 CONTENT: MASTER ALL-IN-ONE PROMPT ==================== -->
+      <div id="ptab-panel-0" class="prompt-panel bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <span class="text-xs font-black uppercase text-sky-600">Recommended for 4-Hour Workshop • All Subtopics Included</span>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">Master Mega Prompt: สร้างเว็บแอปเดียวที่มีครบทุกหัวข้อย่อยของลำดับและอนุกรม + ดอกเบี้ย</h3>
+          </div>
+          <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-black text-xs flex items-center gap-2 shadow transition">
+            <i class="fa-solid fa-up-right-from-square"></i> เปิด Google Gemini เพื่อวาง Prompt
+          </a>
+        </div>
+
+        <!-- Step-by-Step Guide -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+            <span class="px-2.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">ขั้นตอนที่ 1</span>
+            <p class="font-extrabold text-slate-900 text-sm">คัดลอก Master Prompt ด้านล่าง</p>
+            <p class="text-slate-600">คำสั่งนี้ถูกออกแบบมาเป็นพิเศษเพื่อให้ Gemini สร้าง <strong>แถบเมนู 6 บทเรียนย่อย</strong> ครบทั้งบทเรียนเรื่องลำดับและอนุกรม ม.5 ในครั้งเดียว</p>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+            <span class="px-2.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">ขั้นตอนที่ 2</span>
+            <p class="font-extrabold text-slate-900 text-sm">วางใน Gemini แล้วเปิด Canvas Preview</p>
+            <p class="text-slate-600">เข้าเว็บ <a href="https://gemini.google.com" target="_blank" class="text-sky-600 underline font-bold">gemini.google.com</a> วางคำสั่งแล้วกด Enter เมื่อโค้ดรันเสร็จ กดปุ่ม <strong>Preview</strong> เพื่อทดลองเล่นทั้ง 6 หัวข้อย่อยได้ทันที</p>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+            <span class="px-2.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">ขั้นตอนที่ 3</span>
+            <p class="font-extrabold text-slate-900 text-sm">ปรับแก้ข้อความบนหน้าเว็บได้ทันที</p>
+            <p class="text-slate-600">ภายในเว็บที่สร้างขึ้น จะมีปุ่ม <strong>"โหมดครูผู้สอน (แก้ไขโจทย์/เนื้อหา)"</strong> ให้ครูสามารถปรับเปลี่ยนโจทย์บนหน้าเว็บได้เองโดยไม่ต้องแก้โค้ด!</p>
+          </div>
+        </div>
+
+        <!-- Mega Prompt Box 0 -->
+        <div class="bg-slate-50 rounded-2xl border-2 border-sky-200 overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 bg-white border-b border-slate-200">
+            <span class="text-xs font-extrabold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-sky-600"></i> Master Mega Prompt #1: สร้างเว็บแอปครบทุกหัวข้อย่อย + เชื่อมโยงดอกเบี้ย + ปรับเนื้อหาได้ (Single-File HTML)
+            </span>
+            <button type="button" onclick="copyMegaPrompt('prompt-box-0', this)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 text-white font-black text-xs hover:opacity-95 transition flex items-center gap-1.5 cursor-pointer shadow">
+              <i class="fa-regular fa-copy"></i> คัดลอก Master Prompt นี้
+            </button>
+          </div>
+          <div id="prompt-box-0" class="p-5 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-3 font-sans">
+            <p>คุณคือผู้เชี่ยวชาญด้านการพัฒนาสื่อนวัตกรรมการศึกษาวิชา <span class="var-highlight dyn-subject"></span> สำหรับนักเรียนชั้น <span class="var-highlight dyn-grade"></span> ตามหลักสูตร สสวท. ช่วยสร้างเว็บแอปพลิเคชันแบบ Interactive เต็มรูปแบบ เรื่อง <span class="var-highlight dyn-topic"></span> โดยเขียนโค้ดทั้งหมดรวมเป็น <strong>Single-File HTML ไฟล์เดียว (รวม HTML, Tailwind CSS CDN, Chart.js CDN, KaTeX CDN สำหรับแสดงสูตรคณิตศาสตร์ LaTeX และ JavaScript ไว้ในไฟล์ index.html)</strong></p>
+            <p><strong>ข้อกำหนดสำคัญเรื่องการแสดงสูตรคณิตศาสตร์ (LaTeX Math Rendering):</strong> ต้องติดตั้งไลบรารี <strong>KaTeX (หรือ MathJax) ผ่าน CDN</strong> ในแท็ก <code>&lt;head&gt;</code> และเขียนฟังก์ชันสั่งให้เรนเดอร์สมการคณิตศาสตร์ทุกจุดด้วยรูปแบบ LaTeX ที่สวยงามสมบูรณ์แบบ (เช่น เศษส่วน $\frac{a}{b}$, เลขยกกำลัง $r^{n-1}$, ตัวห้อย $a_n, S_n$) รวมถึงต้องเรียกฟังก์ชัน <code>renderMathInElement</code> ซ้ำทุกครั้งที่มีการเปลี่ยนค่าตัวแปรหรือแสดงวิธีทำแบบไดนามิก</p>
+            <p><strong>ดีไซน์และโทนสี:</strong> ออกแบบในสไตล์ <span class="var-highlight dyn-style"></span> ใช้ฟอนต์ภาษาไทย 'Prompt' จาก Google Fonts รองรับการแสดงผลทั้งคอมพิวเตอร์และมือถือ</p>
+            <p><strong>โครงสร้างเนื้อหาบังคับ (ต้องมีแถบเมนูสลับได้ครบทุกหัวข้อย่อยดังนี้):</strong> <span class="var-highlight dyn-subtopics"></span> โดยมีรายละเอียดเชิงลึกในแต่ละแท็บดังนี้:</p>
+            <ol class="list-decimal list-inside space-y-1.5 text-slate-700">
+              <li><strong>แท็บที่ 1 ความหมายของลำดับ & รูปแบบภาพ (Visual Patterns):</strong> ให้ผู้เรียนทดลองเปลี่ยนจำนวนชั้นของรูปเรขาคณิต (เช่น การเรียงจุดสามเหลี่ยม/สี่เหลี่ยม) เพื่อค้นหาความสัมพันธ์ของพจน์ที่ $n$ ($a_n$) ของฟังก์ชันที่มีโดเมนเป็นเซตของจำนวนเต็มบวก</li>
+              <li><strong>แท็บที่ 2 ลำดับเลขคณิต ($a_n = a_1 + (n-1)d$):</strong> มี Slider ปรับค่า $a_1, d, n$ แสดงแผนภาพบล็อกความสูงเพิ่มขึ้นทีละ $d$ คงที่ พร้อมกล่องแสดงวิธีทำแทนค่าด้วยสมการ LaTeX ทีละบรรทัด และตัวอย่างชีวิตจริง (เช่น การออมเงินเพิ่มสัปดาห์ละเท่าๆ กัน หรือการจัดเก้าอี้ในหอประชุม)</li>
+              <li><strong>แท็บที่ 3 ลำดับเรขาคณิต ($a_n = a_1 r^{n-1}$):</strong> มี Slider ปรับค่า $a_1, r, n$ พร้อมกราฟ Chart.js เปรียบเทียบการเติบโตแบบลำดับเลขคณิต (เส้นตรง) กับลำดับเรขาคณิต (ทวีคูณ) และตัวอย่างชีวิตจริง (เช่น การแบ่งเซลล์ หรือการลดลงของมูลค่ารถยนต์ตามค่าเสื่อมราคา)</li>
+              <li><strong>แท็บที่ 4 อนุกรมเลขคณิต ($S_n$):</strong> สร้าง Interactive Visualization แสดงการจับคู่พจน์หน้า-พจน์หลังของเกาส์ (Gauss Pairing) เพื่อให้เห็นที่มาของสูตร $$S_n = \frac{n}{2}(a_1 + a_n) = \frac{n}{2}[2a_1 + (n-1)d]$$ พร้อมตารางเปรียบเทียบค่า $a_n$ กับผลบวกสะสม $S_n$</li>
+              <li><strong>แท็บที่ 5 อนุกรมเรขาคณิต ($S_n$):</strong> สร้างแบบจำลองเห็นภาพ (เช่น การปล่อยลูกบอลตกจากความสูงแล้วกระดอนขึ้นเป็นสัดส่วน $r$) พร้อมแสดงการแทนค่าสูตร $$S_n = \frac{a_1(1 - r^n)}{1 - r}$$ อย่างละเอียดด้วย LaTeX</li>
+              <li><strong>แท็บที่ 6 การประยุกต์เรื่องดอกเบี้ยทบต้นและมูลค่าของเงิน (TVM & Annuities):</strong> เชื่อมโยงลำดับและอนุกรมเรขาคณิตเข้ากับชีวิตจริง ได้แก่ ดอกเบี้ยทบต้น $$S = P\left(1 + \frac{r}{k}\right)^{kn}$$ และเงินรวมค่างวดผ่อนออมรายเดือน $$S_{\text{ปลายงวด}} = \frac{R\left((1 + i)^N - 1\right)}{i}$$ โดยต้องแสดง <strong>"ขั้นที่ 1: แปลงอัตราดอกเบี้ยต่องวด $i = \frac{r}{k}$ และจำนวนงวดทั้งหมด $N = n \times k$"</strong> ก่อนแทนค่าลงสมการเสมอเพื่อไม่ให้นักเรียนสับสน</li>
+              <li><strong>ฟีเจอร์พิเศษ (Editable Content & Cloud Save):</strong> มีปุ่ม "แก้ไขหัวข้อ/โจทย์สำหรับครู" ที่ให้ครูพิมพ์ปรับข้อความโจทย์บนหน้าเว็บได้ทันที และมีฟอร์มส่งคะแนนแบบทดสอบ 5 ข้อเข้าสู่ Google Sheets ผ่านตัวแปร <code>GOOGLE_SCRIPT_URL</code></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 1 CONTENT: SEQUENCES DEEP DIVE ==================== -->
+      <div id="ptab-panel-1" class="prompt-panel hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <span class="text-xs font-black uppercase text-indigo-600">Subtopics 1–3 • Sequences Visualizer</span>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">Prompt เจาะลึกหมวด “ความหมายของลำดับ, ลำดับเลขคณิต และลำดับเรขาคณิต”</h3>
+          </div>
+          <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs flex items-center gap-2 shadow transition">
+            <i class="fa-solid fa-up-right-from-square"></i> เปิด Google Gemini
+          </a>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl border-2 border-indigo-200 overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 bg-white border-b border-slate-200">
+            <span class="text-xs font-extrabold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-indigo-600"></i> Mega Prompt #2: เน้นสื่อเห็นภาพเรื่องลำดับ พจน์ทั่วไป และการหาพจน์กลาง
+            </span>
+            <button type="button" onclick="copyMegaPrompt('prompt-box-1', this)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 text-white font-black text-xs hover:opacity-95 transition flex items-center gap-1.5 cursor-pointer shadow">
+              <i class="fa-regular fa-copy"></i> คัดลอก Prompt นี้
+            </button>
+          </div>
+          <div id="prompt-box-1" class="p-5 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-3 font-sans">
+            <p>ช่วยสร้างเว็บแอปพลิเคชันแบบ Single-File HTML (พร้อมติดตั้ง KaTeX CDN เพื่อแสดงสมการคณิตศาสตร์แบบ LaTeX) วิชา <span class="var-highlight dyn-subject"></span> ระดับชั้น <span class="var-highlight dyn-grade"></span> เรื่อง <span class="var-highlight dyn-topic"></span> ในสไตล์ <span class="var-highlight dyn-style"></span> โดยเจาะลึกเฉพาะหัวข้อย่อยเรื่องลำดับ ได้แก่ <span class="var-highlight dyn-subtopics"></span> ให้เห็นภาพชัดเจนที่สุดดังนี้:</p>
+            <ol class="list-decimal list-inside space-y-1.5 text-slate-700">
+              <li><strong>เครื่องมือค้นหาพจน์ทั่วไป (Pattern Finder):</strong> มีเกมให้ผู้เรียนดูรูปภาพการเรียงจุดหรือบล็อกในพจน์ที่ $a_1, a_2, a_3, a_4$ แล้วทดลองเลื่อนสไลเดอร์เพื่อทายจำนวนในพจน์ที่ $a_n$</li>
+              <li><strong>ห้องทดลองเปรียบเทียบลำดับเลขคณิต vs ลำดับเรขาคณิต:</strong> ปรับค่าพจน์แรก $a_1$, ผลต่างร่วม $d$ และอัตราส่วนร่วม $r$ (รองรับทั้งค่าบวก ค่าลบ และเศษส่วน) พร้อมแสดงสมการ LaTeX $$a_n = a_1 + (n-1)d \quad \text{และ} \quad a_n = a_1 r^{n-1}$$ คู่กับเส้นจำนวนและกราฟเปรียบเทียบ</li>
+              <li><strong>เครื่องมือแก้โจทย์หาพจน์ที่หายไป (Missing Terms Solver):</strong> ให้ผู้เรียนป้อนค่า 2 พจน์ใดๆ (เช่น รู้ค่า $a_3$ และ $a_7$) แล้วให้โปรแกรมแสดงวิธีทำระบบสมการหาค่า $d$ หรือ $r$ และพจน์แรก $a_1$ ออกมาทีละขั้นตอนด้วยสมการ LaTeX ตามหลักสูตร สสวท.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 2 CONTENT: SERIES & INTEREST/TVM ==================== -->
+      <div id="ptab-panel-2" class="prompt-panel hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <span class="text-xs font-black uppercase text-pink-600">Subtopics 4–6 • Series & Financial Mathematics</span>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">Prompt เจาะลึกหมวด “อนุกรมเลขคณิต, อนุกรมเรขาคณิต และดอกเบี้ย/มูลค่าของเงิน”</h3>
+          </div>
+          <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-black text-xs flex items-center gap-2 shadow transition">
+            <i class="fa-solid fa-up-right-from-square"></i> เปิด Google Gemini
+          </a>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl border-2 border-pink-200 overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 bg-white border-b border-slate-200">
+            <span class="text-xs font-extrabold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-pink-600"></i> Mega Prompt #3: เชื่อมโยงผลบวกอนุกรม $S_n$ สู่ดอกเบี้ยทบต้นและค่างวดในชีวิตประจำวัน
+            </span>
+            <button type="button" onclick="copyMegaPrompt('prompt-box-2', this)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 text-white font-black text-xs hover:opacity-95 transition flex items-center gap-1.5 cursor-pointer shadow">
+              <i class="fa-regular fa-copy"></i> คัดลอก Prompt นี้
+            </button>
+          </div>
+          <div id="prompt-box-2" class="p-5 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-3 font-sans">
+            <p>ช่วยสร้างเว็บแอปพลิเคชันแบบ Single-File HTML (พร้อมติดตั้ง KaTeX CDN แสดงสมการ LaTeX ทุกจุด) สำหรับวิชา <span class="var-highlight dyn-subject"></span> ชั้น <span class="var-highlight dyn-grade"></span> เรื่อง <span class="var-highlight dyn-topic"></span> ในสไตล์ <span class="var-highlight dyn-style"></span> โดยเน้นการเชื่อมโยงจากอนุกรมเลขคณิตและอนุกรมเรขาคณิต ไปสู่การคำนวณดอกเบี้ยและมูลค่าของเงินตามหนังสือเรียน สสวท. ดังนี้:</p>
+            <ol class="list-decimal list-inside space-y-1.5 text-slate-700">
+              <li><strong>Interactive Series Visualizer:</strong> แสดงแผนภาพการบวกทบยอดทีละพจน์ ($S_n = a_1 + a_2 + a_3 + \dots + a_n$) เปรียบเทียบกับค่าของพจน์ที่ $n$ ($a_n$) เพื่อแก้ปัญหานักเรียนสับสนระหว่างสูตรหาพจน์กับสูตรหาผลบวก</li>
+              <li><strong>การเชื่อมโยงสู่มูลค่าของเงินตามเวลา (TVM Bridge):</strong> แสดงแผนภาพเส้นเวลา (Cash Flow Timeline) อธิบายว่าการฝากเงินทุกงวด งวดละ $R$ บาท เมื่อคิดดอกเบี้ยทบต้นแต่ละก้อน จะกลายเป็นพจน์ของอนุกรมเรขาคณิต $$R(1+i) + R(1+i)^2 + \dots + R(1+i)^N$$ ที่นำมารวมกันได้อย่างไร</li>
+              <li><strong>เครื่องคำนวณดอกเบี้ยทบต้นและค่างวด (ต้นงวด/ปลายงวด):</strong> แสดงกล่องวิธีทำด้วย LaTeX 2 ขั้นตอนชัดเจน คือ <strong>ขั้นที่ 1 แปลงอัตราดอกเบี้ยต่องวด $i = \frac{r}{100 \times k}$ และจำนวนงวด $N = n \times k$</strong> และ <strong>ขั้นที่ 2 แทนค่าลงในสูตรอนุกรมเรขาคณิต</strong> พร้อมแยกแสดงเงินต้นสะสมทั้งหมด $(\text{ค่างวด} \times \text{จำนวนงวด})$ และดอกเบี้ยสุทธิ</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 3 CONTENT: QUIZ & GOOGLE SHEETS ==================== -->
+      <div id="ptab-panel-3" class="prompt-panel hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <span class="text-xs font-black uppercase text-purple-600">Cloud Database Integration</span>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">การเพิ่มระบบแบบทดสอบ & เชื่อมต่อฐานข้อมูล Google Sheets รับคะแนนนักเรียน</h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <a href="https://sheets.new" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center gap-1.5 shadow transition">
+              <i class="fa-solid fa-table"></i> เปิดชีตใหม่ (sheets.new)
+            </a>
+            <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs flex items-center gap-1.5 shadow transition">
+              <i class="fa-solid fa-up-right-from-square"></i> เปิด Gemini
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3 text-xs">
+            <h4 class="font-extrabold text-sm text-purple-800 flex items-center gap-2">
+              <i class="fa-solid fa-list-check"></i> ขั้นตอนการเชื่อม Google Sheets (ใช้เวลา 3 นาที)
+            </h4>
+            <ol class="list-decimal list-inside space-y-2 text-slate-700 leading-relaxed">
+              <li>คลิกปุ่ม <strong>"เปิดชีตใหม่ (sheets.new)"</strong> ด้านบน แล้วตั้งชื่อไฟล์ตามต้องการ</li>
+              <li>ไปที่เมนูด้านบน <strong>ส่วนขยาย (Extensions) &gt; Apps Script</strong></li>
+              <li>ลบโค้ดเดิมออกทั้งหมด แล้วคัดลอกโค้ด <code>Code.gs</code> ด้านขวามือไปวางแทนที่</li>
+              <li>กดปุ่มสีน้ำเงิน <strong>การทำให้ใช้งานได้ (Deploy) &gt; รายการใหม่ (New deployment)</strong></li>
+              <li>เลือกประเภทเป็น <strong>เว็บแอป (Web app)</strong> และช่อง <em>ผู้มีสิทธิ์เข้าถึง (Who has access)</em> <strong class="text-rose-600">ต้องเลือกเป็น "ทุกคน (Anyone)"</strong></li>
+              <li>คัดลอกลิงก์ <strong>Web App URL</strong> ที่ได้ ไปใส่ในตัวแปร <code>GOOGLE_SCRIPT_URL</code> ในโค้ด HTML ของเรา</li>
+            </ol>
+          </div>
+
+          <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-slate-800 border-b border-slate-700">
+              <span class="text-xs font-bold text-emerald-400">โค้ดหลังบ้าน Google Apps Script (Code.gs)</span>
+              <button type="button" onclick="copyMegaPrompt('gas-code-snippet', this)" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer">
+                <i class="fa-regular fa-copy"></i> คัดลอก Code.gs
+              </button>
+            </div>
+            <pre id="gas-code-snippet" class="p-4 text-xs text-emerald-200 overflow-x-auto leading-relaxed font-mono">function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("Scores") || ss.insertSheet("Scores");
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Timestamp", "StudentID", "FullName", "ClassRoom", "Topic", "Score", "Details"]);
+  }
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    new Date(),
+    data.studentId || "-",
+    data.fullName || "-",
+    data.classRoom || "ม.5",
+    data.topic || "ลำดับและอนุกรม",
+    data.score || 0,
+    data.details || ""
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl border-2 border-purple-200 overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 bg-white border-b border-slate-200">
+            <span class="text-xs font-extrabold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-terminal text-purple-600"></i> Mega Prompt #4: สั่งเพิ่มแบบทดสอบครอบคลุมทุกหัวข้อย่อยและปุ่มส่งคะแนนเข้า Google Sheets
+            </span>
+            <button type="button" onclick="copyMegaPrompt('prompt-box-3', this)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 text-white font-black text-xs hover:opacity-95 transition flex items-center gap-1.5 cursor-pointer shadow">
+              <i class="fa-regular fa-copy"></i> คัดลอก Prompt นี้
+            </button>
+          </div>
+          <div id="prompt-box-3" class="p-5 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-3 font-sans">
+            <p>จากโค้ดเว็บแอปเรื่อง <span class="var-highlight dyn-topic"></span> ชั้น <span class="var-highlight dyn-grade"></span> ข้างต้น ช่วยเพิ่มแท็บใหม่ชื่อ <strong>"แบบทดสอบวัดความเข้าใจ & ส่งงานครู"</strong> ที่ครอบคลุมหัวข้อย่อย <span class="var-highlight dyn-subtopics"></span> โดยมีรายละเอียดดังนี้:</p>
+            <ol class="list-decimal list-inside space-y-1.5 text-slate-700">
+              <li>มีช่องให้นักเรียนกรอก รหัสประจำตัว ชื่อ-สกุล และห้องเรียน</li>
+              <li>มีข้อสอบปรนัยและอัตนัยสั้นๆ รวม 6 ข้อ (ไล่ครบตั้งแต่การหาพจน์ทั่วไป, ลำดับเลขคณิต, ลำดับเรขาคณิต, อนุกรมเลขคณิต, อนุกรมเรขาคณิต และโจทย์ดอกเบี้ยทบต้น/ผ่อนสินค้า) พร้อมปุ่มตรวจคำตอบและแสดงเฉลยละเอียดทุกข้อ</li>
+              <li>มีปุ่ม <strong>"บันทึกคะแนนส่งครู"</strong> ที่ส่งข้อมูล JSON ไปยังตัวแปร <code>const GOOGLE_SCRIPT_URL = "วางลิงก์_WEB_APP_URL_ที่นี่";</code> ด้วยคำสั่ง <code>fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(...) })</code> พร้อมแสดงแจ้งเตือนเมื่อส่งสำเร็จ</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 4 CONTENT: GITHUB DEPLOY & CONTENT EDITING ==================== -->
+      <div id="ptab-panel-4" class="prompt-panel hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <span class="text-xs font-black uppercase text-emerald-600">Deployment & Content Adaptation</span>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">การนำขึ้น GitHub Pages ฟรี & คำสั่งปรับเปลี่ยนเนื้อหา/แก้บัค</h3>
+          </div>
+          <a href="https://github.com/new" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs flex items-center gap-2 shadow transition">
+            <i class="fa-brands fa-github text-base"></i> เปิดหน้าสร้าง Repository (github.com/new)
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+            <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">ขั้นที่ 1</span>
+            <p class="font-extrabold text-slate-900 text-sm">สร้าง Repository ใหม่</p>
+            <p class="text-slate-600">เข้า <code class="text-emerald-700 font-bold">github.com/new</code> ตั้งชื่อภาษาอังกฤษ เช่น <code>math5-seq-app</code> เลือกเป็น <strong>Public</strong> แล้วกด Create repository</p>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+            <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">ขั้นที่ 2</span>
+            <p class="font-extrabold text-slate-900 text-sm">สร้างไฟล์ index.html</p>
+            <p class="text-slate-600">คลิก <strong>creating a new file</strong> ตั้งชื่อไฟล์ว่า <code class="text-rose-600 font-bold">index.html</code> (ตัวพิมพ์เล็กทั้งหมด) แล้ววางโค้ดที่ได้จาก Gemini ลงไป</p>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+            <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">ขั้นที่ 3</span>
+            <p class="font-extrabold text-slate-900 text-sm">กด Commit Changes</p>
+            <p class="text-slate-600">ใส่ลิงก์ Google Apps Script URL ในโค้ดให้เรียบร้อย แล้วกดปุ่มสีเขียว <strong>Commit changes...</strong> มุมขวาบน</p>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+            <span class="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">ขั้นที่ 4</span>
+            <p class="font-extrabold text-slate-900 text-sm">เปิด GitHub Pages</p>
+            <p class="text-slate-600">ไปที่แท็บ <strong>Settings &gt; Pages</strong> เปลี่ยน Branch จาก None เป็น <strong>main</strong> แล้วกด Save รอ 1 นาทีได้ลิงก์เว็บใช้งานจริง!</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl border-2 border-emerald-200 overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 bg-white border-b border-slate-200">
+            <span class="text-xs font-extrabold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-emerald-600"></i> Mega Prompt #5: สั่งเพิ่ม "แผงตั้งค่าครูผู้สอน" เพื่อให้ปรับแก้เนื้อหา/โจทย์บนหน้าเว็บได้เองตลอดเวลา
+            </span>
+            <button type="button" onclick="copyMegaPrompt('prompt-box-4', this)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 text-white font-black text-xs hover:opacity-95 transition flex items-center gap-1.5 cursor-pointer shadow">
+              <i class="fa-regular fa-copy"></i> คัดลอก Prompt ปรับเนื้อหา
+            </button>
+          </div>
+          <div id="prompt-box-4" class="p-5 text-xs sm:text-sm text-slate-800 leading-relaxed space-y-3 font-sans">
+            <p>ช่วยอัปเกรดโค้ด Single-File HTML เรื่อง <span class="var-highlight dyn-topic"></span> นี้ให้มีความยืดหยุ่นสูงสุดสำหรับครูผู้สอน ดังนี้:</p>
+            <ol class="list-decimal list-inside space-y-1.5 text-slate-700">
+              <li>เพิ่มปุ่ม <strong>"⚙️ โหมดปรับแต่งเนื้อหาสำหรับครู"</strong> ที่มุมขวาบน เมื่อคลิกจะเปิดหน้าต่างให้ครูสามารถพิมพ์แก้ไขชื่อโรงเรียน ชื่อครูผู้สอน คำอธิบายบทเรียน และโจทย์ตัวอย่างของ <span class="var-highlight dyn-subtopics"></span> ได้โดยตรงบนหน้าเว็บ</li>
+              <li>ตรวจสอบสมการคณิตศาสตร์ ป้องกันค่า <code>NaN</code> หรือตัวเลขล้นจอ และทำให้ทุกปุ่มกดทำงานได้สมบูรณ์ 100% พร้อมส่งโค้ดฉบับเต็มตั้งแต่ <code>&lt;!DOCTYPE html&gt;</code> ถึง <code>&lt;/html&gt;</code></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- ส่วนที่ 5: Live Showcase (หน้าต่างแสดงผลงานตัวอย่างจริงแบบสดๆ)            -->
+  <!-- ===================================================================== -->
+  <section id="showcase" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <span class="text-xs font-extrabold uppercase tracking-widest text-pink-600">Live Web Application Showcase</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1 flex items-center gap-2.5">
+          <i class="fa-solid fa-desktop text-sky-600"></i>
+          <span>หน้าต่างแสดงผลงานเว็บไซต์ตัวอย่างของวิทยากร (Live Preview)</span>
+        </h2>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" onclick="switchShowcaseUrl('https://mathdevth.github.io/')" class="px-3.5 py-2 rounded-xl bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 text-xs font-extrabold transition cursor-pointer shadow-sm">
+          🌐 เว็บหลัก: mathdevth.github.io
+        </button>
+        <button type="button" onclick="switchShowcaseUrl('https://mathdevth.github.io/financial-classroom/')" class="px-3.5 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 text-xs font-extrabold transition cursor-pointer shadow-sm">
+          💰 แอปคณิตการเงิน: financial-classroom
+        </button>
+      </div>
+    </div>
+
+    <!-- Browser Mockup Container -->
+    <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden">
+      <!-- Browser Top Bar -->
+      <div class="bg-slate-100 px-4 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-rose-400"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+          <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+        </div>
+        <div class="flex-1 max-w-xl bg-white px-4 py-1.5 rounded-xl border border-slate-200 text-xs font-mono text-slate-600 flex items-center justify-between truncate">
+          <span class="flex items-center gap-2 truncate">
+            <i class="fa-solid fa-lock text-emerald-500"></i>
+            <span id="browser-url-label" class="truncate">https://mathdevth.github.io/</span>
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="reloadShowcaseIframe()" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-rotate-right"></i> รีเฟรช
+          </button>
+          <a id="showcase-ext-link" href="https://mathdevth.github.io/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-up-right-from-square"></i> เปิดเต็มจอในแท็บใหม่
+          </a>
+        </div>
+      </div>
+
+      <!-- Iframe Viewport -->
+      <div class="w-full h-[520px] bg-slate-50 relative">
+        <iframe id="showcase-iframe" src="https://mathdevth.github.io/" class="w-full h-full border-0" title="Live Showcase Web Application" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- ส่วนที่ 6: Checklist เตรียมความพร้อม & Footer เครดิตวิทยากร               -->
+  <!-- ===================================================================== -->
+  <section id="checklist" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-600">Pre-Workshop Readiness Checklist</span>
+          <h2 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">รายการเตรียมความพร้อมสำหรับครูผู้เข้าอบรม (คลิกเช็กทีละข้อ)</h2>
+        </div>
+        <span id="checklist-counter" class="px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs">
+          เช็กแล้ว 0/4
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <label class="p-4 rounded-2xl bg-slate-50 hover:bg-sky-50/60 border border-slate-200 flex items-start gap-3 cursor-pointer transition select-none">
+          <input type="checkbox" class="ready-chk w-4 h-4 accent-sky-600 mt-0.5 rounded cursor-pointer" onchange="updateReadinessCount()" />
+          <div class="space-y-1">
+            <p class="font-extrabold text-slate-900 text-sm">1. บัญชี Google Gemini</p>
+            <p class="text-slate-600">ล็อกอินเข้าใช้งาน <a href="https://gemini.google.com" target="_blank" class="text-sky-600 underline font-bold">gemini.google.com</a> สำหรับสั่ง AI เขียนโค้ด</p>
+          </div>
+        </label>
+
+        <label class="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 border border-slate-200 flex items-start gap-3 cursor-pointer transition select-none">
+          <input type="checkbox" class="ready-chk w-4 h-4 accent-emerald-600 mt-0.5 rounded cursor-pointer" onchange="updateReadinessCount()" />
+          <div class="space-y-1">
+            <p class="font-extrabold text-slate-900 text-sm">2. Google Sheets</p>
+            <p class="text-slate-600">เตรียมสร้างตารางรับคะแนนนักเรียนที่ <a href="https://sheets.new" target="_blank" class="text-emerald-600 underline font-bold">sheets.new</a></p>
+          </div>
+        </label>
+
+        <label class="p-4 rounded-2xl bg-slate-50 hover:bg-purple-50/60 border border-slate-200 flex items-start gap-3 cursor-pointer transition select-none">
+          <input type="checkbox" class="ready-chk w-4 h-4 accent-purple-600 mt-0.5 rounded cursor-pointer" onchange="updateReadinessCount()" />
+          <div class="space-y-1">
+            <p class="font-extrabold text-slate-900 text-sm">3. บัญชี GitHub (ฟรี)</p>
+            <p class="text-slate-600">สมัครและยืนยันอีเมลที่ <a href="https://github.com/signup" target="_blank" class="text-purple-600 underline font-bold">github.com</a> เพื่อใช้อัปโหลดเว็บ</p>
+          </div>
+        </label>
+
+        <label class="p-4 rounded-2xl bg-slate-50 hover:bg-pink-50/60 border border-slate-200 flex items-start gap-3 cursor-pointer transition select-none">
+          <input type="checkbox" class="ready-chk w-4 h-4 accent-pink-600 mt-0.5 rounded cursor-pointer" onchange="updateReadinessCount()" />
+          <div class="space-y-1">
+            <p class="font-extrabold text-slate-900 text-sm">4. โจทย์ลำดับและอนุกรม ม.5</p>
+            <p class="text-slate-600">เตรียมโจทย์หรือตัวอย่างชีวิตจริงที่ต้องการนำมาใส่ในเว็บแอปของตนเอง</p>
+          </div>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-slate-600">
+      <div class="space-y-1">
+        <p class="font-black text-slate-900 text-sm">โครงการอบรมเชิงปฏิบัติการ: การสร้างเว็บแอปคณิตศาสตร์โดยใช้ AI (หลักสูตร 4 ชั่วโมง)</p>
+        <p>วิทยากรผู้สอน: <strong class="text-sky-700">นายอชิตพล บุณรัตน์</strong> • ตำแหน่ง ครูโรงเรียนวังโพรงพิทยาคม (25 มีนาคม 2570)</p>
+        <p class="text-[11px] text-slate-400">เนื้อหาและชุดคำสั่งพัฒนาขึ้นตามกรอบมาตรฐานการเรียนรู้คณิตศาสตร์ ม.5 (หลักสูตร สสวท.) เพื่อประโยชน์ทางการศึกษา</p>
+      </div>
+      <a href="#hero" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-sky-600 text-white font-bold transition flex items-center gap-2 shrink-0">
+        <i class="fa-solid fa-arrow-up"></i> กลับขึ้นด้านบน
+      </a>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- ⚡ JavaScript Logic (Real-time Prompt Customizer, Interactive Labs)    -->
+  <!-- ===================================================================== -->
+  <script>
+    // ฟังก์ชันสั่งให้ KaTeX เรนเดอร์สมการคณิตศาสตร์ ($...$ และ $$...$$) ทั้งหน้าเว็บ
+    function renderAllMath(targetEl) {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(targetEl || document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // =========================================================================
+    // 🎮 ฟังก์ชันสำหรับห้องทดลองสื่อ Interactive ทั้ง 4 โมดูล (Demo Labs)
+    // =========================================================================
+    function switchDemoLab(labIndex) {
+      document.querySelectorAll('.demo-panel').forEach((panel, idx) => {
+        if (idx === labIndex) panel.classList.remove('hidden');
+        else panel.classList.add('hidden');
+      });
+
+      const tabColors = ['text-sky-700', 'text-indigo-700', 'text-pink-700', 'text-emerald-700'];
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById('demo-tab-' + i);
+        if (!btn) continue;
+        if (i === labIndex) {
+          btn.className = `px-3.5 py-2 rounded-xl text-xs font-extrabold transition bg-white ${tabColors[i]} shadow-sm cursor-pointer`;
+        } else {
+          btn.className = 'px-3.5 py-2 rounded-xl text-xs font-extrabold transition text-slate-600 hover:text-slate-900 cursor-pointer';
+        }
+      }
+    }
+
+    // Lab 0: เปรียบเทียบลำดับเลขคณิต vs ลำดับเรขาคณิต
+    function updateDemoSeq() {
+      const a1 = parseFloat(document.getElementById('rng-seq-a1').value);
+      const d = parseFloat(document.getElementById('rng-seq-d').value);
+      const r = parseFloat(document.getElementById('rng-seq-r').value);
+      const n = parseInt(document.getElementById('rng-seq-n').value, 10);
+
+      document.getElementById('lbl-seq-a1').textContent = a1;
+      document.getElementById('lbl-seq-d').textContent = '+' + d;
+      document.getElementById('lbl-seq-r').textContent = '×' + r;
+      document.getElementById('lbl-seq-n').textContent = `พจน์ที่ ${n} (a_${n})`;
+
+      const an_arith = a1 + (n - 1) * d;
+      const an_geom = a1 * Math.pow(r, n - 1);
+
+      const mathBox = document.getElementById('seq-math-box');
+      if (mathBox) {
+        mathBox.innerHTML = `
+          <div><strong>1) ลำดับเลขคณิต:</strong> $a_{${n}} = ${a1} + (${n}-1)(${d}) = \\mathbf{${an_arith.toLocaleString()}}$</div>
+          <div><strong>2) ลำดับเรขาคณิต:</strong> $a_{${n}} = ${a1} \\times (${r})^{${n}-1} = \\mathbf{${Number(an_geom.toFixed(2)).toLocaleString()}}$</div>
+        `;
+        renderAllMath(mathBox);
+      }
+
+      // วาดแท่งกราฟเปรียบเทียบ
+      const barsContainer = document.getElementById('seq-bars-container');
+      if (barsContainer) {
+        let maxVal = Math.max(an_arith, an_geom, 10);
+        let html = '';
+        for (let i = 1; i <= n; i++) {
+          const valA = a1 + (i - 1) * d;
+          const valG = a1 * Math.pow(r, i - 1);
+          const hA = Math.max(8, Math.round((valA / maxVal) * 165));
+          const hG = Math.max(8, Math.round((valG / maxVal) * 165));
+          html += `
+            <div class="flex flex-col items-center gap-1 flex-1">
+              <div class="flex items-end gap-1 h-44 w-full justify-center">
+                <div class="w-4 sm:w-5 bg-sky-400 rounded-t-lg transition-all duration-300 relative group" style="height:${hA}px">
+                  <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-sky-300">${valA}</span>
+                </div>
+                <div class="w-4 sm:w-5 bg-pink-500 rounded-t-lg transition-all duration-300 relative group" style="height:${hG}px">
+                  <span class="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-pink-300">${Number(valG.toFixed(1))}</span>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold text-slate-300">a<sub>${i}</sub></span>
+            </div>
+          `;
+        }
+        barsContainer.innerHTML = html;
+      }
+    }
+
+    function resetDemoSeq() {
+      document.getElementById('rng-seq-a1').value = 2;
+      document.getElementById('rng-seq-d').value = 3;
+      document.getElementById('rng-seq-r').value = 2;
+      document.getElementById('rng-seq-n').value = 6;
+      updateDemoSeq();
+    }
+
+    // Lab 1: อนุกรมเลขคณิต & การจับคู่ของเกาส์
+    function updateDemoGauss() {
+      const a1 = parseInt(document.getElementById('rng-gauss-a1').value, 10);
+      const d = parseInt(document.getElementById('rng-gauss-d').value, 10);
+      const n = parseInt(document.getElementById('rng-gauss-n').value, 10);
+
+      const pairs = n / 2;
+      document.getElementById('lbl-gauss-a1').textContent = a1;
+      document.getElementById('lbl-gauss-d').textContent = d;
+      document.getElementById('lbl-gauss-n').textContent = `${n} พจน์ (${pairs} คู่)`;
+
+      const terms = [];
+      for (let i = 1; i <= n; i++) {
+        terms.push(a1 + (i - 1) * d);
+      }
+      const an = terms[terms.length - 1];
+      const pairSum = a1 + an;
+      const Sn = pairs * pairSum;
+
+      const mathBox = document.getElementById('gauss-math-box');
+      if (mathBox) {
+        mathBox.innerHTML = `
+          <div>พจน์สุดท้าย: $a_{${n}} = ${a1} + (${n}-1)(${d}) = ${an}$</div>
+          <div>ผลบวกของแต่ละคู่: $a_1 + a_{${n}} = ${a1} + ${an} = \\mathbf{${pairSum}}$</div>
+          <div class="text-indigo-700 font-bold">ดังนั้น $S_{${n}} = \\frac{${n}}{2}(${a1} + ${an}) = ${pairs} \\times ${pairSum} = \\mathbf{${Sn.toLocaleString()}}$</div>
+        `;
+        renderAllMath(mathBox);
+      }
+
+      const colors = [
+        'bg-sky-500/20 border-sky-400 text-sky-300',
+        'bg-pink-500/20 border-pink-400 text-pink-300',
+        'bg-amber-500/20 border-amber-400 text-amber-300',
+        'bg-emerald-500/20 border-emerald-400 text-emerald-300',
+        'bg-purple-500/20 border-purple-400 text-purple-300'
+      ];
+
+      let pillsHtml = '<div class="flex flex-wrap items-center justify-center gap-2">';
+      for (let i = 0; i < n; i++) {
+        const pairIdx = i < pairs ? i : (n - 1 - i);
+        const colorCls = colors[pairIdx % colors.length];
+        pillsHtml += `
+          <div class="px-3.5 py-2.5 rounded-2xl border-2 ${colorCls} text-center min-w-[58px]">
+            <div class="text-[10px] opacity-75">a<sub>${i + 1}</sub></div>
+            <div class="text-base font-black">${terms[i]}</div>
+            <div class="text-[10px] font-bold">คู่ที่ ${pairIdx + 1}</div>
+          </div>
+        `;
+        if (i < n - 1) {
+          pillsHtml += `<span class="text-slate-500 font-black">+</span>`;
+        }
+      }
+      pillsHtml += '</div>';
+
+      let summaryPairsHtml = '<div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">';
+      for (let p = 0; p < pairs; p++) {
+        const colorCls = colors[p % colors.length];
+        summaryPairsHtml += `
+          <div class="p-3 rounded-xl border ${colorCls} text-xs text-center font-bold">
+            คู่ที่ ${p + 1}: (${terms[p]} + ${terms[n - 1 - p]}) = <span class="text-sm font-black">${pairSum}</span>
+          </div>
+        `;
+      }
+      summaryPairsHtml += '</div>';
+
+      const visualBox = document.getElementById('gauss-visual-box');
+      if (visualBox) {
+        visualBox.innerHTML = pillsHtml + summaryPairsHtml;
+      }
+    }
+
+    // Lab 2: อนุกรมเรขาคณิต (ลูกบอลกระดอนพื้น)
+    function updateDemoBall() {
+      const h1 = parseFloat(document.getElementById('rng-ball-h').value);
+      const r = parseFloat(document.getElementById('rng-ball-r').value);
+      const n = parseInt(document.getElementById('rng-ball-n').value, 10);
+
+      document.getElementById('lbl-ball-h').textContent = `${h1} เมตร`;
+      document.getElementById('lbl-ball-r').textContent = `${r.toFixed(2)} (${Math.round(r * 100)}%)`;
+      document.getElementById('lbl-ball-n').textContent = `${n} ครั้ง`;
+
+      const Sn = (h1 * (1 - Math.pow(r, n))) / (1 - r);
+      const S_inf = h1 / (1 - r);
+
+      const mathBox = document.getElementById('ball-math-box');
+      if (mathBox) {
+        mathBox.innerHTML = `
+          <div>ผลบวกความสูงสูงสุด ${n} ครั้งแรก ($S_{${n}}$):</div>
+          <div class="font-bold text-pink-700">$$S_{${n}} = \\frac{${h1}(1 - ${r}^{${n}})}{1 - ${r}} \\approx \\mathbf{${Sn.toFixed(2)}} \\text{ เมตร}$$</div>
+          <div class="text-[11px] text-slate-500">หากกระดอนไปเรื่อยๆ ไม่สิ้นสุด ($S_\\infty = \\frac{a_1}{1-r}$): $\\mathbf{${S_inf.toFixed(2)}}$ เมตร</div>
+        `;
+        renderAllMath(mathBox);
+      }
+
+      const barsEl = document.getElementById('ball-Bounce-bars');
+      if (barsEl) {
+        let html = '';
+        for (let i = 1; i <= n; i++) {
+          const hi = h1 * Math.pow(r, i - 1);
+          const barH = Math.max(12, Math.round((hi / h1) * 165));
+          html += `
+            <div class="flex flex-col items-center gap-1.5 flex-1">
+              <div class="flex flex-col items-center justify-end h-44 w-full">
+                <div class="w-4 h-4 rounded-full bg-gradient-to-br from-amber-300 to-pink-500 shadow-md mb-1"></div>
+                <div class="w-3 sm:w-4 bg-gradient-to-t from-pink-600/40 to-sky-400 rounded-t-full transition-all duration-300 relative" style="height:${barH}px">
+                  <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-amber-300">${hi.toFixed(2)}m</span>
+                </div>
+              </div>
+              <span class="text-[11px] font-bold text-slate-300">ครั้งที่ ${i}</span>
+            </div>
+          `;
+        }
+        barsEl.innerHTML = html;
+      }
+    }
+
+    // Lab 3: ดอกเบี้ยทบต้น & ค่างวดรายเดือน (TVM Bridge)
+    function updateDemoTVM() {
+      const R = parseFloat(document.getElementById('rng-tvm-r').value);
+      const rateYear = parseFloat(document.getElementById('rng-tvm-rate').value);
+      const years = parseInt(document.getElementById('rng-tvm-years').value, 10);
+
+      const k = 12;
+      const N = years * k;
+      const i = (rateYear / 100) / k;
+
+      document.getElementById('lbl-tvm-r').textContent = `${R.toLocaleString()} บาท`;
+      document.getElementById('lbl-tvm-rate').textContent = `${rateYear}% ต่อปี`;
+      document.getElementById('lbl-tvm-years').textContent = `${years} ปี (${N} งวด)`;
+
+      const totalPrincipal = R * N;
+      const fvOrdinary = R * ((Math.pow(1 + i, N) - 1) / i);
+      const totalInterest = fvOrdinary - totalPrincipal;
+
+      const mathBox = document.getElementById('tvm-math-box');
+      if (mathBox) {
+        mathBox.innerHTML = `
+          <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
+            <strong class="text-emerald-800">ขั้นที่ 1: แปลงตัวแปรตามงวด (ทบต้นทุกเดือน $k=12$)</strong><br/>
+            • อัตราดอกเบี้ยต่องวด: $i = \\frac{${rateYear}\\%}{12} = \\mathbf{${i.toFixed(5)}}$<br/>
+            • จำนวนงวดทั้งหมด: $N = ${years} \\times 12 = \\mathbf{${N}}$ งวด
+          </div>
+          <div class="pt-1">
+            <strong class="text-slate-800">ขั้นที่ 2: แทนค่าในสูตรอนุกรมเรขาคณิตค่างวดปลายงวด</strong>
+            $$S_{\\text{ปลายงวด}} = \\frac{${R.toLocaleString()}\\left((1 + ${i.toFixed(5)})^{${N}} - 1\\right)}{${i.toFixed(5)}} = \\mathbf{${Math.round(fvOrdinary).toLocaleString()}} \\text{ บาท}$$
+          </div>
+        `;
+        renderAllMath(mathBox);
+      }
+
+      document.getElementById('res-tvm-principal').textContent = `${Math.round(totalPrincipal).toLocaleString()} ฿`;
+      document.getElementById('res-tvm-interest').textContent = `+${Math.round(totalInterest).toLocaleString()} ฿`;
+      document.getElementById('res-tvm-total').textContent = `${Math.round(fvOrdinary).toLocaleString()} ฿`;
+
+      const prinPct = Math.round((totalPrincipal / fvOrdinary) * 100);
+      const intPct = 100 - prinPct;
+      document.getElementById('lbl-bar-prin').textContent = `สัดส่วนเงินต้น: ${prinPct}%`;
+      document.getElementById('lbl-bar-int').textContent = `สัดส่วนดอกเบี้ยทบต้น: ${intPct}%`;
+      document.getElementById('bar-tvm-prin').style.width = `${prinPct}%`;
+      document.getElementById('bar-tvm-int').style.width = `${intPct}%`;
+    }
+
+    // 1. อัปเดตตัวแปรทั้ง 5 ช่องใน Mega Prompt ทุกแท็บแบบ Real-time + เรนเดอร์ LaTeX ทันที
+    function updateAllPrompts() {
+      const subject = document.getElementById('inp-subject').value.trim() || 'คณิตศาสตร์';
+      const grade = document.getElementById('inp-grade').value.trim() || 'มัธยมศึกษาปีที่ 5 (ม.5)';
+      const topic = document.getElementById('inp-topic').value.trim() || 'ลำดับและอนุกรม';
+      const style = document.getElementById('inp-style').value.trim() || 'โทนสีขาวสะอาดตา โมเดิร์นพาสเทล ฟ้า-ชมพู';
+      const subtopics = document.getElementById('inp-subtopics').value.trim() || 'ความหมายของลำดับ, ลำดับเลขคณิต, ลำดับเรขาคณิต, อนุกรมเลขคณิต, อนุกรมเรขาคณิต และดอกเบี้ยทบต้น';
+
+      document.querySelectorAll('.dyn-subject').forEach(el => { el.textContent = subject; });
+      document.querySelectorAll('.dyn-grade').forEach(el => { el.textContent = grade; });
+      document.querySelectorAll('.dyn-topic').forEach(el => { el.textContent = topic; });
+      document.querySelectorAll('.dyn-style').forEach(el => { el.textContent = style; });
+      document.querySelectorAll('.dyn-subtopics').forEach(el => {
+        el.textContent = subtopics;
+        if (typeof renderMathInElement === 'function') {
+          renderMathInElement(el, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false }
+            ],
+            throwOnError: false
+          });
+        }
+      });
+    }
+
+    // ปุ่ม Presets เลือกชุดเนื้อหาสำเร็จรูปได้ทันที (พร้อมสมการ LaTeX)
+    function applyPreset(presetKey) {
+      if (presetKey === 'full_seq_tvm') {
+        document.getElementById('inp-subject').value = 'คณิตศาสตร์ (หลักสูตร สสวท.)';
+        document.getElementById('inp-grade').value = 'มัธยมศึกษาปีที่ 5 (ม.5)';
+        document.getElementById('inp-topic').value = 'ลำดับและอนุกรม และการประยุกต์เรื่องดอกเบี้ยและมูลค่าของเงิน';
+        document.getElementById('inp-style').value = 'โทนสีขาวสะอาดตา โมเดิร์นพาสเทล ฟ้า-ชมพู การ์ดสวยงามอ่านง่าย';
+        document.getElementById('inp-subtopics').value = '(1) ความหมายของลำดับและพจน์ทั่วไป (2) ลำดับเลขคณิต $a_n = a_1+(n-1)d$ (3) ลำดับเรขาคณิต $a_n = a_1 r^{n-1}$ (4) อนุกรมเลขคณิต $S_n = \\frac{n}{2}[2a_1+(n-1)d]$ (5) อนุกรมเรขาคณิต $S_n = \\frac{a_1(1-r^n)}{1-r}$ และ (6) การประยุกต์เรื่องดอกเบี้ยทบต้น $S = P(1+i)^n$ มูลค่าปัจจุบัน/อนาคต และค่างวดผ่อนชำระในชีวิตจริง';
+        showToast('เลือกชุดเริ่มต้น: ลำดับและอนุกรมครบทุกหัวข้อย่อย + ดอกเบี้ย (LaTeX)');
+      } else if (presetKey === 'pure_seq') {
+        document.getElementById('inp-topic').value = 'ลำดับและอนุกรม (เน้นความเข้าใจเชิงมโนทัศน์และรูปแบบภาพ)';
+        document.getElementById('inp-subtopics').value = '(1) ลำดับจำกัดและลำดับอนันต์ (2) การหาพจน์ทั่วไป $a_n$ จากรูปเรขาคณิต (3) ลำดับเลขคณิต $a_n = a_1+(n-1)d$ (4) ลำดับเรขาคณิต $a_n = a_1 r^{n-1}$ (5) อนุกรมเลขคณิต $S_n$ และ (6) อนุกรมเรขาคณิต $S_n$';
+        showToast('เลือกชุดเนื้อหา: เน้นลำดับและอนุกรมพื้นฐาน ม.5');
+      } else if (presetKey === 'fin_math') {
+        document.getElementById('inp-topic').value = 'การประยุกต์ลำดับและอนุกรมในคณิตศาสตร์การเงิน (ดอกเบี้ยและค่างวด)';
+        document.getElementById('inp-subtopics').value = '(1) ดอกเบี้ยคงต้น vs ดอกเบี้ยทบต้น (2) มูลค่าอนาคต $S = P(1+\\frac{r}{k})^{kn}$ (3) มูลค่าปัจจุบัน $P = S(1+\\frac{r}{k})^{-kn}$ (4) เงินรวมค่างวดต้นงวดและปลายงวด $S_n = \\frac{R((1+i)^n-1)}{i}$ (5) การผ่อนชำระสินค้าและวางแผนการออม';
+        showToast('เลือกชุดเนื้อหา: เน้นดอกเบี้ยทบต้น ค่างวด และมูลค่าของเงิน');
+      }
+      updateAllPrompts();
+    }
+
+    // 2. สลับแท็บในส่วน Magic Prompt (0 ถึง 4)
+    function switchPromptTab(tabIndex) {
+      const panels = document.querySelectorAll('.prompt-panel');
+      panels.forEach((panel, idx) => {
+        if (idx === tabIndex) {
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
+      });
+
+      for (let i = 0; i < 5; i++) {
+        const btn = document.getElementById('ptab-btn-' + i);
+        if (!btn) continue;
+        if (i === tabIndex) {
+          btn.className = 'flex-1 min-w-[170px] py-3 px-4 rounded-2xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-pink-500 text-white shadow-md cursor-pointer';
+        } else {
+          btn.className = 'flex-1 min-w-[170px] py-3 px-4 rounded-2xl font-extrabold text-xs sm:text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 cursor-pointer';
+        }
+      }
+    }
+
+    // 3. เมื่อคลิกกล่องใน Interactive Workflow Diagram ให้เลื่อนลงมาและเปิดแท็บนั้นทันที
+    function selectWorkflowStep(tabIndex) {
+      switchPromptTab(tabIndex);
+      const container = document.getElementById('prompt-tabs-container');
+      if (container) {
+        const yOffset = -85;
+        const y = container.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        const activePanel = document.getElementById('ptab-panel-' + tabIndex);
+        if (activePanel) {
+          activePanel.classList.remove('pulse-focus');
+          void activePanel.offsetWidth;
+          activePanel.classList.add('pulse-focus');
+        }
+      }
+      showToast('เปิดคู่มือและ Mega Prompt ชุดที่ ' + (tabIndex + 1) + ' แล้ว');
+    }
+
+    // 4. ระบบคัดลอก Mega Prompt ลง Clipboard
+    function copyMegaPrompt(elementId, btnEl) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+
+      const onSuccess = () => {
+        showToast('คัดลอกคำสั่งเรียบร้อย! นำไปวางใน Gemini ได้เลย');
+        if (btnEl) {
+          const orig = btnEl.innerHTML;
+          btnEl.innerHTML = '<i class="fa-solid fa-check"></i> คัดลอกสำเร็จ!';
+          setTimeout(() => { btnEl.innerHTML = orig; }, 1800);
+        }
+      };
+
+      const fallbackCopy = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+          document.execCommand('copy');
+          onSuccess();
+        } catch (e) {
+          showToast('กรุณาคลุมดำแล้วกด Ctrl+C');
+        }
+        document.body.removeChild(ta);
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(onSuccess).catch(fallbackCopy);
+      } else {
+        fallbackCopy();
+      }
+    }
+
+    // 5. ควบคุมหน้าต่าง Live Showcase Iframe
+    function switchShowcaseUrl(url) {
+      const iframe = document.getElementById('showcase-iframe');
+      const label = document.getElementById('browser-url-label');
+      const extLink = document.getElementById('showcase-ext-link');
+      if (iframe) iframe.src = url;
+      if (label) label.textContent = url;
+      if (extLink) extLink.href = url;
+      showToast('สลับหน้าต่างแสดงผลงานเป็น: ' + url);
+    }
+
+    function reloadShowcaseIframe() {
+      const iframe = document.getElementById('showcase-iframe');
+      if (iframe) {
+        iframe.src = iframe.src;
+        showToast('รีเฟรชหน้าเว็บตัวอย่างเรียบร้อยแล้ว');
+      }
+    }
+
+    // 6. อัปเดตตัวนับ Checklist เตรียมความพร้อม
+    function updateReadinessCount() {
+      const checks = document.querySelectorAll('.ready-chk');
+      let count = 0;
+      checks.forEach(c => { if (c.checked) count++; });
+      const badge = document.getElementById('checklist-counter');
+      if (badge) {
+        badge.textContent = `เช็กแล้ว ${count}/${checks.length}`;
+      }
+      if (count === checks.length) {
+        showToast('เย้! คุณเตรียมความพร้อมครบทุกข้อแล้ว พร้อมลุยสร้างเว็บแอปได้เลย 🎉');
+      }
+    }
+
+    // 7. แสดง Toast Notification
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 2600);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateAllPrompts();
+      updateDemoSeq();
+      updateDemoGauss();
+      updateDemoBall();
+      updateDemoTVM();
+      // รอให้สคริปต์ KaTeX โหลดเสร็จแล้วสั่งเรนเดอร์สมการทั้งหน้าเว็บ
+      setTimeout(() => {
+        renderAllMath();
+        updateDemoSeq();
+        updateDemoGauss();
+        updateDemoBall();
+        updateDemoTVM();
+      }, 250);
+    });
+    window.addEventListener('load', () => {
+      renderAllMath();
+      updateDemoSeq();
+      updateDemoGauss();
+      updateDemoBall();
+      updateDemoTVM();
+    });
+  </script>
+</body>
+</html>
