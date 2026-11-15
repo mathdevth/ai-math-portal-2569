@@ -127,7 +127,7 @@
       <!-- Quick Gemini Launch -->
       <div class="flex items-center gap-2">
         <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 hover:from-sky-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition flex items-center gap-1.5">
-          <i class="fa-solid fa-sparkles"></i>
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
           <span>เปิด Gemini AI</span>
         </a>
       </div>
@@ -693,7 +693,7 @@
           <ul class="text-xs text-slate-600 space-y-2 leading-relaxed">
             <li class="flex gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i><span>ทำความเข้าใจเทคนิค <strong>Single-File HTML</strong> (ไม่ต้องลงโปรแกรม)</span></li>
             <li class="flex gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i><span>ปรับแต่งตัวแปรใน <strong>Magic Prompt Customizer</strong> ให้ตรงบริบทโรงเรียน</span></li>
-            <li class="flex gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i><span>เจนโค้ดชุดหลักให้ได้ครบ 5 หัวข้อย่อยของลำดับและอนุกรม ม.5</span></li>
+            <li class="flex gap-2"><i class="fa-solid fa-check text-sky-500 mt-1"></i><span>เจนโค้ดชุดหลักให้ได้ครบ 6 หัวข้อย่อยของลำดับและอนุกรม ม.5</span></li>
           </ul>
         </div>
         <div class="pt-3 border-t border-slate-100 text-[11px] font-bold text-sky-600">
@@ -1303,7 +1303,7 @@
       document.getElementById('lbl-seq-a1').textContent = a1;
       document.getElementById('lbl-seq-d').textContent = '+' + d;
       document.getElementById('lbl-seq-r').textContent = '×' + r;
-      document.getElementById('lbl-seq-n').textContent = `พจน์ที่ ${n} (a_${n})`;
+      document.getElementById('lbl-seq-n').innerHTML = `พจน์ที่ ${n} (a<sub>${n}</sub>)`;
 
       const an_arith = a1 + (n - 1) * d;
       const an_geom = a1 * Math.pow(r, n - 1);
@@ -1607,7 +1607,19 @@
     function copyMegaPrompt(elementId, btnEl) {
       const el = document.getElementById(elementId);
       if (!el) return;
-      const text = el.innerText || el.textContent;
+      // แปลงสมการ KaTeX ที่เรนเดอร์แล้วกลับเป็นข้อความ LaTeX ($...$) ก่อนคัดลอก ป้องกันข้อความซ้ำ/เพี้ยน
+      const clone = el.cloneNode(true);
+      clone.querySelectorAll('.katex-display, .katex').forEach(k => {
+        if (!clone.contains(k)) return;
+        const ann = k.querySelector('annotation[encoding="application/x-tex"]');
+        if (!ann) return;
+        const isDisplay = k.classList.contains('katex-display');
+        k.replaceWith(document.createTextNode(isDisplay ? ` $$${ann.textContent}$$ ` : `$${ann.textContent}$`));
+      });
+      clone.style.position = 'fixed'; clone.style.left = '-9999px';
+      document.body.appendChild(clone);
+      const text = (clone.innerText || clone.textContent).replace(/[ \t]+\n/g, '\n').trim();
+      document.body.removeChild(clone);
 
       const onSuccess = () => {
         showToast('คัดลอกคำสั่งเรียบร้อย! นำไปวางใน Gemini ได้เลย');
@@ -1706,13 +1718,7 @@
         updateDemoTVM();
       }, 250);
     });
-    window.addEventListener('load', () => {
-      renderAllMath();
-      updateDemoSeq();
-      updateDemoGauss();
-      updateDemoBall();
-      updateDemoTVM();
-    });
+    window.addEventListener('load', () => renderAllMath());
   </script>
 </body>
 </html>
