@@ -106,28 +106,24 @@
           <span class="font-extrabold text-sm sm:text-base tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-600 via-indigo-600 to-pink-600">
             AI Math WebApp Portal
           </span>
-          <p class="text-[11px] text-slate-500 hidden sm:block">อบรมครูคณิตศาสตร์ ม.5 (หลักสูตร 4 ชม.) • 25 มี.ค. 2570</p>
+          <p class="text-[11px] text-slate-500 hidden sm:block lg:hidden xl:block whitespace-nowrap">อบรมครูคณิตศาสตร์ ม.5 (หลักสูตร 4 ชม.) • 25 มี.ค. 2570</p>
         </div>
       </a>
 
       <!-- Desktop Menu -->
-      <nav class="hidden md:flex items-center gap-1 lg:gap-2 text-xs lg:text-sm font-bold text-slate-600">
-        <a href="#workflow" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">1. แผนผัง 5 ขั้นตอน</a>
-        <a href="#interactive-demo" class="px-3 py-2 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition">
-          <i class="fa-solid fa-gamepad text-amber-500 mr-1"></i>ตัวอย่างสื่อ Interactive
-        </a>
-        <a href="#schedule" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">2. กำหนดการ 4 ชม.</a>
-        <a href="#magic-prompt" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-50 to-pink-50 text-sky-700 border border-sky-200 hover:border-pink-300 transition">
-          <i class="fa-solid fa-bolt text-pink-500 mr-1"></i>3. Magic Prompt
-        </a>
-        <a href="#showcase" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">4. ผลงานตัวอย่าง</a>
-        <a href="#toolkit" class="px-3 py-2 rounded-xl hover:bg-rose-50 hover:text-rose-600 transition">5. คลินิกแก้บัค & QR</a>
-        <a href="#checklist" class="px-3 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">6. เตรียมความพร้อม</a>
+      <nav class="hidden lg:flex items-center gap-0.5 text-[13px] font-bold text-slate-600 whitespace-nowrap">
+        <a href="#workflow" class="px-2.5 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">แผนผัง</a>
+        <a href="#interactive-demo" class="px-2.5 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition"><i class="fa-solid fa-gamepad text-amber-500 mr-1"></i>ตัวอย่างสื่อ</a>
+        <a href="#schedule" class="px-2.5 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">กำหนดการ</a>
+        <a href="#magic-prompt" class="px-3 py-2 rounded-xl bg-gradient-to-r from-sky-50 to-pink-50 text-sky-700 border border-sky-200 hover:border-pink-300 transition"><i class="fa-solid fa-bolt text-pink-500 mr-1"></i>Magic Prompt</a>
+        <a href="#showcase" class="px-2.5 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">ผลงาน</a>
+        <a href="#toolkit" class="px-2.5 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">แก้บัค & QR</a>
+        <a href="#checklist" class="px-2.5 py-2 rounded-xl hover:bg-sky-50 hover:text-sky-600 transition">เตรียมพร้อม</a>
       </nav>
 
       <!-- Quick Gemini Launch -->
       <div class="flex items-center gap-2">
-        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 hover:from-sky-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition flex items-center gap-1.5">
+        <a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-pink-500 hover:from-sky-600 hover:to-pink-600 text-white font-extrabold text-xs shadow-md shadow-sky-500/20 transition flex items-center gap-1.5 whitespace-nowrap">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
           <span>เปิด Gemini AI</span>
         </a>
@@ -140,7 +136,9 @@
     <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 lg:p-12 relative overflow-hidden border border-slate-200 shadow-xl">
       <div class="absolute -right-16 -top-16 w-72 h-72 bg-gradient-to-br from-sky-100 to-pink-100 rounded-full blur-2xl pointer-events-none"></div>
 
-      <div class="relative z-10 max-w-4xl space-y-6">
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        <!-- ฝั่งซ้าย: หัวเรื่องและปุ่ม -->
+        <div class="lg:col-span-7 space-y-6">
         <!-- Status Badges -->
         <div class="flex flex-wrap items-center gap-2.5">
           <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs font-extrabold">
@@ -156,75 +154,31 @@
         </div>
 
         <!-- Main Heading -->
-        <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-slate-900">
-          การสร้างเว็บแอปคณิตศาสตร์โดยใช้ AI<br />
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-pink-600">
-            เจาะลึก “ลำดับและอนุกรม” ครบทุกหัวข้อย่อย
-          </span>
+        <h1 class="text-3xl sm:text-4xl xl:text-[2.6rem] font-black tracking-tight leading-tight text-slate-900">
+          สร้างเว็บแอปคณิตศาสตร์ด้วย AI<br />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-pink-600">ลำดับและอนุกรม ครบทุกหัวข้อย่อย</span>
         </h1>
 
-        <p class="text-slate-600 text-sm sm:text-lg leading-relaxed max-w-3xl">
-          พอร์ทัลการเรียนรู้สำหรับครูคณิตศาสตร์ ม.5 พาสร้างเว็บแอปแบบ Interactive ด้วย <strong>Google Gemini</strong> ให้ครบทั้ง <strong>6 หัวข้อย่อยของเรื่องลำดับและอนุกรม</strong> (ความหมายของลำดับ, ลำดับเลขคณิต, ลำดับเรขาคณิต, อนุกรมเลขคณิต, อนุกรมเรขาคณิต) พร้อมเชื่อมโยงสู่ <strong>ดอกเบี้ยและมูลค่าของเงินในชีวิตประจำวัน</strong> และปรับเปลี่ยนเนื้อหาเป็นบทเรียนอื่นได้ตามต้องการ!
+        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+          พอร์ทัลการเรียนรู้สำหรับครูคณิตศาสตร์ ม.5 พาสร้างเว็บแอปแบบ Interactive ด้วย <strong>Google Gemini</strong> ให้ครบทั้ง <strong>6 หัวข้อย่อยของเรื่องลำดับและอนุกรม</strong> พร้อมเชื่อมโยงสู่ <strong>ดอกเบี้ยและมูลค่าของเงินในชีวิตประจำวัน</strong> และปรับเปลี่ยนเนื้อหาเป็นบทเรียนอื่นได้ตามต้องการ
         </p>
-
-        <!-- Subtopics Coverage Banner -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5">
-          <div class="text-xs font-extrabold text-slate-700 flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-sky-600"></i>
-            <span>หัวข้อย่อยในเว็บแอปที่ผู้เข้าอบรมจะได้สร้างจาก Prompt ของเรา (ครบตามโครงสร้าง สสวท. ม.5 พร้อมแสดงสมการ LaTeX คมชัด):</span>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-bold">
-            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
-              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] shrink-0">1</span> <span class="leading-snug min-w-0">ความหมายลำดับ $a_n$</span>
-            </div>
-            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
-              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] shrink-0">2</span> <span class="leading-snug min-w-0">ลำดับเลขคณิต ($a_n$)</span>
-            </div>
-            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
-              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] shrink-0">3</span> <span class="leading-snug min-w-0">ลำดับเรขาคณิต ($a_n$)</span>
-            </div>
-            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
-              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] shrink-0">4</span> <span class="leading-snug min-w-0">อนุกรมเลขคณิต ($S_n$)</span>
-            </div>
-            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
-              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] shrink-0">5</span> <span class="leading-snug min-w-0">อนุกรมเรขาคณิต ($S_n$)</span>
-            </div>
-            <div class="bg-gradient-to-r from-pink-50 to-rose-50 px-3 py-2 rounded-xl border border-pink-200 text-pink-700 flex items-center gap-1.5 shadow-sm">
-              <span class="w-5 h-5 rounded-full bg-pink-500 text-white flex items-center justify-center text-[10px] shrink-0">6</span> <span class="leading-snug min-w-0">ดอกเบี้ย & มูลค่าเงิน</span>
-            </div>
-          </div>
-
-          <!-- 📐 กล่องตัวอย่างการแสดงผลสมการคณิตศาสตร์ด้วย LaTeX (KaTeX Preview) -->
-          <div class="pt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm text-center">
-              <p class="text-[11px] font-bold text-sky-700 mb-1">1. ลำดับเลขคณิต & เรขาคณิต</p>
-              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
-                $$a_n = a_1 + (n-1)d \quad , \quad a_n = a_1 r^{n-1}$$
-              </div>
-            </div>
-            <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm text-center">
-              <p class="text-[11px] font-bold text-indigo-700 mb-1">2. อนุกรมเลขคณิต ($S_n$)</p>
-              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
-                $$S_n = \frac{n}{2}[2a_1 + (n-1)d]$$
-              </div>
-            </div>
-            <div class="bg-white p-3 rounded-xl border border-purple-200 shadow-sm text-center">
-              <p class="text-[11px] font-bold text-purple-700 mb-1">3. อนุกรมเรขาคณิต ($S_n$)</p>
-              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
-                $$S_n = \frac{a_1(1 - r^n)}{1 - r} \quad (r \neq 1)$$
-              </div>
-            </div>
-            <div class="bg-white p-3 rounded-xl border border-pink-200 shadow-sm text-center">
-              <p class="text-[11px] font-bold text-pink-700 mb-1">4. ดอกเบี้ยทบต้น & ค่างวด</p>
-              <div class="text-xs sm:text-sm text-slate-900 py-1 overflow-x-auto">
-                $$S = P\left(1 + \frac{r}{k}\right)^{kn}$$
-              </div>
-            </div>
-          </div>
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          <a href="#interactive-demo" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-sm sm:text-base shadow-lg shadow-amber-500/25 hover:scale-[1.02] active:scale-95 transition flex items-center gap-2">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>ทดลองสื่อ Interactive</span>
+          </a>
+          <a href="#magic-prompt" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 via-indigo-500 to-pink-500 text-white font-black text-sm sm:text-base shadow-lg shadow-sky-500/25 hover:scale-[1.02] active:scale-95 transition flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>ไปที่ Magic Prompt</span>
+          </a>
+          <a href="#schedule" class="px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 font-bold text-sm sm:text-base transition flex items-center gap-2">
+            <i class="fa-regular fa-clock text-sky-600"></i>
+            <span>กำหนดการ 4 ชม.</span>
+          </a>
         </div>
-
         <!-- Instructor & Showcase Info -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center gap-4">
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center font-black text-xl shrink-0 shadow">
               <i class="fa-solid fa-chalkboard-user"></i>
@@ -250,20 +204,65 @@
           </div>
         </div>
 
-        <!-- CTA Buttons -->
-        <div class="flex flex-wrap items-center gap-3.5 pt-2">
-          <a href="#interactive-demo" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-sm sm:text-base shadow-lg shadow-amber-500/25 hover:scale-[1.02] active:scale-95 transition flex items-center gap-2">
-            <i class="fa-solid fa-gamepad"></i>
-            <span>ทดลองเล่นสื่อ Interactive ที่ครูจะได้สร้าง</span>
-          </a>
-          <a href="#magic-prompt" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 via-indigo-500 to-pink-500 text-white font-black text-sm sm:text-base shadow-lg shadow-sky-500/25 hover:scale-[1.02] active:scale-95 transition flex items-center gap-2">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span>ไปที่ Magic Prompt (ครบทุกหัวข้อย่อย)</span>
-          </a>
-          <a href="#schedule" class="px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 font-bold text-sm sm:text-base transition flex items-center gap-2">
-            <i class="fa-regular fa-clock text-sky-600"></i>
-            <span>ดูกำหนดการอบรม 4 ชั่วโมง</span>
-          </a>
+        </div>
+
+        <!-- ฝั่งขวา: หัวข้อย่อยและสูตร -->
+        <div class="lg:col-span-5 bg-slate-50 border border-slate-200 rounded-3xl p-5 space-y-4">
+          <div class="text-xs font-extrabold text-slate-700 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-sky-600"></i>
+            <span>6 หัวข้อย่อยในเว็บแอปที่ครูจะได้สร้าง (ตามโครงสร้าง สสวท. ม.5)</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 text-xs font-bold">
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] shrink-0">1</span> <span class="leading-snug min-w-0">ความหมายลำดับ $a_n$</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] shrink-0">2</span> <span class="leading-snug min-w-0">ลำดับเลขคณิต ($a_n$)</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] shrink-0">3</span> <span class="leading-snug min-w-0">ลำดับเรขาคณิต ($a_n$)</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] shrink-0">4</span> <span class="leading-snug min-w-0">อนุกรมเลขคณิต ($S_n$)</span>
+            </div>
+            <div class="bg-white px-3 py-2 rounded-xl border border-slate-200 text-slate-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] shrink-0">5</span> <span class="leading-snug min-w-0">อนุกรมเรขาคณิต ($S_n$)</span>
+            </div>
+            <div class="bg-gradient-to-r from-pink-50 to-rose-50 px-3 py-2 rounded-xl border border-pink-200 text-pink-700 flex items-center gap-1.5 shadow-sm">
+              <span class="w-5 h-5 rounded-full bg-pink-500 text-white flex items-center justify-center text-[10px] shrink-0">6</span> <span class="leading-snug min-w-0">ดอกเบี้ย & มูลค่าเงิน</span>
+            </div>
+          </div>
+
+          <div class="text-xs font-extrabold text-slate-700 flex items-center gap-2 pt-1">
+            <i class="fa-solid fa-square-root-variable text-pink-500"></i>
+            <span>สูตรสำคัญ (แสดงผลด้วย LaTeX)</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-sky-700">ลำดับเลขคณิต</p>
+              <div class="text-sm text-slate-900 overflow-x-auto">$$a_n = a_1 + (n-1)d$$</div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-sky-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-sky-700">ลำดับเรขาคณิต</p>
+              <div class="text-sm text-slate-900 overflow-x-auto">$$a_n = a_1 r^{n-1}$$</div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-indigo-700">อนุกรมเลขคณิต</p>
+              <div class="text-sm text-slate-900 overflow-x-auto">$$S_n = \frac{n}{2}[2a_1 + (n-1)d]$$</div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-purple-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-purple-700">อนุกรมเรขาคณิต</p>
+              <div class="text-sm text-slate-900 overflow-x-auto">$$S_n = \frac{a_1(1 - r^n)}{1 - r}$$</div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-pink-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-pink-700">ดอกเบี้ยทบต้น</p>
+              <div class="text-sm text-slate-900 overflow-x-auto">$$S = P(1+i)^{N}$$</div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-pink-200 shadow-sm text-center">
+              <p class="text-[11px] font-bold text-pink-700">เงินรวมค่างวด</p>
+              <div class="text-sm text-slate-900 overflow-x-auto">$$S = \frac{R[(1+i)^N - 1]}{i}$$</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -274,7 +273,7 @@
   <!-- ===================================================================== -->
   <section id="interactive-demo" class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
     <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 border-2 border-amber-200 shadow-xl space-y-6 relative overflow-hidden">
-      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-slate-100 pb-5">
+      <div class="flex flex-col gap-4 border-b border-slate-100 pb-5">
         <div class="space-y-1.5">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-black uppercase">
             <i class="fa-solid fa-wand-sparkles"></i> Live Interactive Preview • สื่อจริงที่เกิดจาก Mega Prompt
@@ -288,7 +287,7 @@
         </div>
 
         <!-- Lab Selector Tabs -->
-        <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shrink-0">
+        <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start">
           <button type="button" onclick="switchDemoLab(0)" id="demo-tab-0" class="px-3.5 py-2 rounded-xl text-xs font-extrabold transition bg-white text-sky-700 shadow-sm cursor-pointer">
             📊 1. ลำดับเลขคณิต vs เรขาคณิต
           </button>
@@ -551,7 +550,7 @@
         <span class="text-xs font-extrabold uppercase tracking-widest text-sky-600">Interactive Learning Roadmap</span>
         <h2 class="text-2xl sm:text-3xl font-black mt-1 text-slate-900 flex items-center gap-2.5">
           <i class="fa-solid fa-route text-pink-500"></i>
-          <span>แผนภาพ 5 ขั้นตอนการอบรม (คลิกเพื่อเปิด Mega Prompt แต่ละชุด)</span>
+          <span>แผนภาพ 5 ขั้นตอนการอบรม</span>
         </h2>
       </div>
       <p class="text-xs sm:text-sm text-sky-800 bg-sky-50 border border-sky-200 px-4 py-2 rounded-xl font-semibold">
@@ -561,10 +560,10 @@
     </div>
 
     <!-- Horizontal Flowchart with Arrows -->
-    <div class="grid grid-cols-1 lg:grid-cols-11 gap-3 items-stretch">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:flex xl:flex-row gap-3 items-stretch">
 
       <!-- Step 1 Node: All-in-One Master Prompt -->
-      <button type="button" onclick="selectWorkflowStep(0)" class="lg:col-span-2 bg-white p-5 rounded-3xl border-2 border-sky-300 hover:border-sky-500 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+      <button type="button" onclick="selectWorkflowStep(0)" class="xl:flex-1 xl:min-w-0 bg-white p-5 rounded-3xl border-2 border-sky-300 hover:border-sky-500 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
             <span class="w-9 h-9 rounded-xl bg-sky-500 text-white font-black flex items-center justify-center text-sm shadow">01</span>
@@ -580,12 +579,12 @@
       </button>
 
       <!-- Arrow -->
-      <div class="hidden lg:flex items-center justify-center text-slate-400">
-        <i class="fa-solid fa-angles-right text-xl"></i>
+      <div class="hidden xl:flex items-center justify-center text-slate-300 shrink-0">
+        <i class="fa-solid fa-chevron-right text-sm"></i>
       </div>
 
       <!-- Step 2 Node: Deep Dive Sequences -->
-      <button type="button" onclick="selectWorkflowStep(1)" class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 hover:border-indigo-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+      <button type="button" onclick="selectWorkflowStep(1)" class="xl:flex-1 xl:min-w-0 bg-white p-5 rounded-3xl border border-slate-200 hover:border-indigo-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
             <span class="w-9 h-9 rounded-xl bg-indigo-500 text-white font-black flex items-center justify-center text-sm shadow">02</span>
@@ -601,12 +600,12 @@
       </button>
 
       <!-- Arrow -->
-      <div class="hidden lg:flex items-center justify-center text-slate-400">
-        <i class="fa-solid fa-angles-right text-xl"></i>
+      <div class="hidden xl:flex items-center justify-center text-slate-300 shrink-0">
+        <i class="fa-solid fa-chevron-right text-sm"></i>
       </div>
 
       <!-- Step 3 Node: Deep Dive Series & TVM -->
-      <button type="button" onclick="selectWorkflowStep(2)" class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 hover:border-pink-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+      <button type="button" onclick="selectWorkflowStep(2)" class="xl:flex-1 xl:min-w-0 bg-white p-5 rounded-3xl border border-slate-200 hover:border-pink-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
             <span class="w-9 h-9 rounded-xl bg-pink-500 text-white font-black flex items-center justify-center text-sm shadow">03</span>
@@ -622,12 +621,12 @@
       </button>
 
       <!-- Arrow -->
-      <div class="hidden lg:flex items-center justify-center text-slate-400">
-        <i class="fa-solid fa-angles-right text-xl"></i>
+      <div class="hidden xl:flex items-center justify-center text-slate-300 shrink-0">
+        <i class="fa-solid fa-chevron-right text-sm"></i>
       </div>
 
       <!-- Step 4 Node: Google Sheets -->
-      <button type="button" onclick="selectWorkflowStep(3)" class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 hover:border-purple-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+      <button type="button" onclick="selectWorkflowStep(3)" class="xl:flex-1 xl:min-w-0 bg-white p-5 rounded-3xl border border-slate-200 hover:border-purple-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-3">
             <span class="w-9 h-9 rounded-xl bg-purple-600 text-white font-black flex items-center justify-center text-sm shadow">04</span>
@@ -643,22 +642,23 @@
       </button>
 
       <!-- Arrow -->
-      <div class="hidden lg:flex items-center justify-center text-slate-400">
-        <i class="fa-solid fa-angles-right text-xl"></i>
+      <div class="hidden xl:flex items-center justify-center text-slate-300 shrink-0">
+        <i class="fa-solid fa-chevron-right text-sm"></i>
       </div>
 
       <!-- Step 5 Node: GitHub Pages -->
-      <button type="button" onclick="selectWorkflowStep(4)" class="lg:col-span-1 bg-white p-4 rounded-3xl border border-slate-200 hover:border-emerald-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
+      <button type="button" onclick="selectWorkflowStep(4)" class="xl:flex-1 xl:min-w-0 bg-white p-5 rounded-3xl border border-slate-200 hover:border-emerald-400 shadow-sm hover:shadow-md text-left transition-all group cursor-pointer flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="w-8 h-8 rounded-xl bg-emerald-500 text-white font-black flex items-center justify-center text-xs shadow">05</span>
+          <div class="flex items-center justify-between mb-3">
+            <span class="w-9 h-9 rounded-xl bg-emerald-500 text-white font-black flex items-center justify-center text-sm shadow">05</span>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">Deploy</span>
           </div>
-          <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-emerald-600 transition">นำขึ้น GitHub</h3>
-          <p class="text-[11px] text-slate-500 mt-1 leading-snug">วางโค้ดเปิดเว็บออนไลน์ใน 3 นาที</p>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-emerald-600 transition">นำขึ้น GitHub Pages & ปรับเนื้อหา</h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">เพิ่มโหมดครูปรับเนื้อหา แล้ววางโค้ดเปิดเว็บออนไลน์ได้ใน 3 นาที</p>
         </div>
-        <div class="mt-3 pt-2 border-t border-slate-100 text-[10px] font-extrabold text-emerald-600 flex items-center justify-between">
-          <span>เปิด #5</span>
-          <i class="fa-solid fa-rocket"></i>
+        <div class="mt-4 pt-2.5 border-t border-slate-100 text-[11px] font-extrabold text-emerald-600 flex items-center justify-between">
+          <span>เปิด Prompt #5</span>
+          <i class="fa-solid fa-rocket group-hover:translate-x-1 transition"></i>
         </div>
       </button>
 
@@ -1242,10 +1242,17 @@
             </div>
             <pre id="bug-prompt-4" class="whitespace-pre-wrap font-sans text-xs text-slate-600 leading-relaxed">ปุ่มส่งคะแนนไม่บันทึกข้อมูลลง Google Sheets ช่วยตรวจว่าใช้ fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) }) ถูกต้อง ชื่อ field ตรงกับ Apps Script (studentId, fullName, classRoom, topic, score, details) และแสดงข้อความแจ้งเตือนเมื่อส่งเสร็จ แล้วส่งโค้ดฉบับเต็ม</pre>
           </div>
+          <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4 space-y-2 flex flex-col">
+            <div class="flex items-start justify-between gap-2">
+              <p class="font-extrabold text-sm text-slate-900"><i class="fa-solid fa-bug text-rose-500 mr-1"></i>ปัญหาอื่น ๆ (Prompt ครอบจักรวาล)</p>
+              <button type="button" onclick="copyMegaPrompt('bug-prompt-5', this)" class="shrink-0 px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-400 text-white font-black text-[11px] transition cursor-pointer"><i class="fa-regular fa-copy"></i> คัดลอก</button>
+            </div>
+            <pre id="bug-prompt-5" class="whitespace-pre-wrap font-sans text-xs text-slate-600 leading-relaxed">เว็บแอปมีปัญหา: [อธิบายสิ่งที่เห็น เช่น กดปุ่ม X แล้วไม่มีอะไรเกิดขึ้น] ช่วยวิเคราะห์สาเหตุทีละขั้น แก้ไขให้ถูกต้องโดยไม่ลบฟีเจอร์เดิม ตรวจสอบว่าทุกแท็บยังทำงานครบ แล้วส่งโค้ดฉบับเต็มตั้งแต่ &lt;!DOCTYPE html&gt; ถึง &lt;/html&gt;</pre>
+          </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
       <!-- QR Code -->
       <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-200 shadow-md space-y-4">
         <h3 class="text-lg sm:text-xl font-black text-slate-900">📱 สร้าง QR Code เว็บของคุณครู</h3>
